@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>Alex Uscata — Software Developer</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+<style>
+html{scroll-behavior:smooth;background:#EFECE7}
+body{margin:0;font-family:'Hanken Grotesk',ui-sans-serif,system-ui,sans-serif;background:#EFECE7;color:#17181A;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+a{color:inherit;text-decoration:none}
+a:hover{color:inherit}
+::selection{background:#17181A;color:#EFECE7}
+p{text-wrap:pretty}
+h1,h2,h3{text-wrap:balance}
+@keyframes om-marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes om-spin{to{transform:rotate(360deg)}}
+@keyframes om-pulse{0%,100%{opacity:1}50%{opacity:.3}}
+@keyframes om-fadeup{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:translateY(0)}}
+@media (max-width:922px){
+  [data-r-cols]{grid-template-columns:1fr !important;gap:38px !important}
+  [data-r-badge]{width:104px !important;height:104px !important;top:-52px !important}
+}
+@media (max-width:768px){
+  [data-r-navlink]{padding:7px 11px !important;font-size:13px !important}
+  [data-r-heroimg]{width:94vw !important;margin-top:2vh !important}
+  [data-r-herolabel]{margin-right:0 !important}
+  [data-r-badge]{width:88px !important;height:88px !important;top:-44px !important}
+  [data-r-rowcat]{display:none !important}
+  [data-r-rowline]{flex-wrap:wrap !important;row-gap:4px !important}
+  [data-r-rowpad]{padding-left:clamp(20px,5vw,72px) !important}
+  [data-r-worktitle]{font-size:clamp(22px,7vw,26px) !important}
+}
+@media (max-width:360px){
+  [data-r-navlink]{padding:6px 8px !important;font-size:12px !important}
+  [data-r-badge]{width:76px !important;height:76px !important;top:-38px !important}
+}
+</style>
+</helmet>
+
+<nav style="position:fixed;top:0;left:0;right:0;z-index:60;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px clamp(18px,4vw,52px);mix-blend-mode:difference;color:#FFFFFF">
+  <a href="#/" style="font-weight:700;font-size:16px;letter-spacing:-0.01em;color:#FFFFFF">©&nbsp;Alex&nbsp;Uscata</a>
+  <div style="display:flex;gap:2px;flex-wrap:wrap">
+    <sc-for list="{{ navLinks }}" as="item" hint-placeholder-count="4">
+      <a href="{{ item.href }}" data-r-navlink style="position:relative;color:#FFFFFF;font-size:15px;font-weight:500;padding:9px 16px;border-radius:999px;transition:background .25s" style-hover="background:rgba(255,255,255,.16)">{{ item.label }}<sc-if value="{{ item.on }}"><span style="position:absolute;left:50%;bottom:2px;width:4px;height:4px;border-radius:50%;background:#FFFFFF;transform:translateX(-50%)"></span></sc-if></a>
+    </sc-for>
+  </div>
+</nav>
+
+<sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+<main data-screen-label="Home">
+  <section data-screen-label="Home — Hero" style="position:relative;min-height:100vh;overflow:hidden;background:#EFECE7;display:flex;align-items:center;justify-content:center">
+    <h1 style="position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);margin:0">Alex Uscata — Application Developer, Basel</h1>
+    <div style="position:absolute;left:0;right:0;top:54%;transform:translateY(-50%);z-index:1;overflow:hidden;animation:om-fadeup 1.1s .15s cubic-bezier(.2,.65,.3,1) backwards">
+      <div style="display:flex;width:max-content;will-change:transform;animation:om-marquee var(--mqd,26s) linear infinite">
+        <div style="display:flex;align-items:baseline;gap:.45em;padding-right:.45em;font-size:clamp(70px,11.5vw,200px);font-weight:600;letter-spacing:-0.035em;line-height:.95;color:#17181A;white-space:nowrap">
+          <span>Alex Uscata</span><span style="opacity:.25;font-weight:400">—</span><span>Alex Uscata</span><span style="opacity:.25;font-weight:400">—</span><span>Alex Uscata</span><span style="opacity:.25;font-weight:400">—</span>
+        </div>
+        <div aria-hidden="true" style="display:flex;align-items:baseline;gap:.45em;padding-right:.45em;font-size:clamp(70px,11.5vw,200px);font-weight:600;letter-spacing:-0.035em;line-height:.95;color:#17181A;white-space:nowrap">
+          <span>Alex Uscata</span><span style="opacity:.25;font-weight:400">—</span><span>Alex Uscata</span><span style="opacity:.25;font-weight:400">—</span><span>Alex Uscata</span><span style="opacity:.25;font-weight:400">—</span>
+        </div>
+      </div>
+    </div>
+    <img src="uploads/hero-cutout.png" alt="Portrait of Alex Uscata" data-r-heroimg style="position:relative;z-index:2;width:clamp(480px,67vw,1035px);max-height:92vh;object-fit:contain;margin-top:6vh;animation:om-fadeup 1s cubic-bezier(.2,.65,.3,1) backwards;filter:drop-shadow(0 30px 50px rgba(23,24,26,.22))">
+    <div style="position:absolute;left:0;right:0;bottom:32px;z-index:3;display:flex;align-items:flex-end;justify-content:space-between;gap:18px;flex-wrap:wrap;padding:0 clamp(20px,5vw,72px);animation:om-fadeup 1s .35s cubic-bezier(.2,.65,.3,1) backwards">
+      <div data-magnetic style="display:inline-flex;align-items:center;gap:10px;background:#17181A;color:#EFECE7;padding:13px 24px;border-radius:999px;font-size:14px;font-weight:600;transition:transform .35s cubic-bezier(.2,.8,.2,1)">
+        <span style="width:8px;height:8px;border-radius:50%;background:var(--accent,#C6402E);animation:om-pulse 2.4s ease-in-out infinite"></span>
+        <span>Based in Switzerland</span>
+      </div>
+      <div data-r-herolabel style="text-align:right;margin-right:150px">
+        <div style="font-size:16px;font-weight:700;letter-spacing:-0.01em">↳ Application Developer</div>
+        <div style="margin-top:7px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;opacity:.55;font-weight:600">Web · App · Backend</div>
+      </div>
+    </div>
+  </section>
+
+  <section data-screen-label="Home — Intro" style="position:relative;background:#17181A;color:#EFECE7;padding:clamp(90px,12vw,170px) clamp(20px,5vw,72px) clamp(80px,10vw,140px)">
+    <div data-magnetic data-r-badge style="position:absolute;top:-64px;right:clamp(20px,5vw,72px);width:128px;height:128px;border-radius:50%;background:var(--accent,#C6402E);z-index:5;display:flex;align-items:center;justify-content:center;transition:transform .35s cubic-bezier(.2,.8,.2,1)">
+      <svg viewBox="0 0 100 100" style="position:absolute;inset:0;width:100%;height:100%;animation:om-spin 18s linear infinite">
+        <defs><path id="om-circ" d="M50,50 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0"></path></defs>
+        <text style="font-size:8.6px;letter-spacing:.14em;fill:#FFFFFF;font-weight:600"><textPath href="#om-circ">ALEX USCATA — SOFTWARE DEVELOPER —</textPath></text>
+      </svg>
+      <span style="color:#FFFFFF;font-size:22px">↓</span>
+    </div>
+    <div data-reveal data-r-cols style="display:grid;grid-template-columns:1.5fr .9fr;gap:clamp(32px,5vw,80px);max-width:1400px;margin:0 auto;align-items:start">
+      <h2 style="margin:0;font-size:clamp(26px,3.3vw,52px);font-weight:500;letter-spacing:-0.015em;line-height:1.18">I'm Alex — an application developer from Basel. I build calm, dependable software for the web and for your pocket, and I sweat the quiet details others skip.</h2>
+      <div style="display:flex;flex-direction:column;gap:26px;padding-top:10px">
+        <p style="margin:0;font-size:17px;line-height:1.65;opacity:.7">From .NET backends to Angular frontends, I like owning the whole picture — the data model, the API, and the last two percent of polish that makes software feel effortless.</p>
+        <a href="#/about" data-magnetic style="align-self:flex-start;border:1px solid rgba(239,236,231,.3);border-radius:999px;padding:14px 28px;font-size:15px;font-weight:600;transition:background .3s,color .3s,transform .35s cubic-bezier(.2,.8,.2,1)" style-hover="background:#EFECE7;color:#17181A">About me</a>
+      </div>
+    </div>
+  </section>
+
+  <section data-screen-label="Home — Selected work" style="background:#EFECE7;color:#17181A;padding:clamp(80px,10vw,140px) 0 clamp(70px,9vw,120px)">
+    <div data-reveal style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:0 clamp(20px,5vw,72px);margin-bottom:28px">
+      <div style="font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;opacity:.55">Selected work <span style="color:var(--accent,#C6402E);opacity:1">/ 04</span></div>
+      <a href="#/work" style="font-size:13px;font-weight:600;opacity:.6;transition:color .25s,opacity .25s" style-hover="opacity:1;color:var(--accent,#C6402E)">All projects →</a>
+    </div>
+    <div onMouseLeave="{{ clearHover }}" style="border-bottom:1px solid rgba(23,24,26,.14)">
+      <sc-for list="{{ featured }}" as="item" hint-placeholder-count="4">
+        <div onClick="{{ item.go }}" onMouseEnter="{{ item.enter }}" data-reveal style="cursor:pointer;border-top:1px solid rgba(23,24,26,.14);transition:background-color .45s ease" style-hover="background-color:rgba(23,24,26,.05)">
+          <div data-r-rowline style="display:flex;align-items:center;gap:clamp(14px,2.6vw,36px);padding:clamp(22px,3vw,34px) clamp(20px,5vw,72px)">
+            <span style="font-size:13px;font-weight:700;color:var(--accent,#C6402E);min-width:26px;font-variant-numeric:tabular-nums">{{ item.idx }}</span>
+            <span data-r-worktitle style="font-size:clamp(26px,3.6vw,56px);font-weight:550;letter-spacing:-0.025em;line-height:1.02">{{ item.title }}</span>
+            <span style="flex:1"></span>
+            <span data-r-rowcat style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;opacity:.5">{{ item.cat }}</span>
+            <span style="font-size:14px;opacity:.6;font-variant-numeric:tabular-nums">{{ item.year }}</span>
+          </div>
+          <div style="{{ item.detailStyle }}">
+            <div data-r-rowpad style="display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;padding:2px clamp(20px,5vw,72px) clamp(22px,3vw,30px) calc(clamp(20px,5vw,72px) + 26px + clamp(14px,2.6vw,36px))">
+              <p style="margin:0;font-size:16px;opacity:.72;max-width:520px">{{ item.desc }}</p>
+              <span style="display:inline-flex;gap:10px;align-items:center;flex-wrap:wrap">
+                <sc-if value="{{ item.live }}"><a href="{{ item.liveUrl }}" target="_blank" rel="noopener" title="Placeholder — replace with the live URL" onClick="{{ item.stop }}" style="border:1px solid rgba(23,24,26,.3);padding:9px 18px;border-radius:999px;font-size:13px;font-weight:600;transition:background .25s,color .25s,border-color .25s" style-hover="background:#17181A;color:#EFECE7;border-color:#17181A">Live site ↗</a></sc-if>
+                <sc-if value="{{ item.git }}"><a href="{{ item.gitUrl }}" target="_blank" rel="noopener" onClick="{{ item.stop }}" style="border:1px solid rgba(23,24,26,.3);padding:9px 18px;border-radius:999px;font-size:13px;font-weight:600;transition:background .25s,color .25s,border-color .25s" style-hover="background:#17181A;color:#EFECE7;border-color:#17181A">GitHub ↗</a></sc-if>
+                <span style="font-size:13px;font-weight:600;color:var(--accent,#C6402E)">Case study →</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="display:flex;justify-content:center;margin-top:56px">
+      <a href="#/work" data-magnetic style="background:#17181A;color:#EFECE7;border-radius:999px;padding:18px 34px;font-size:15px;font-weight:600;display:inline-flex;gap:12px;align-items:baseline;transition:background .3s,transform .35s cubic-bezier(.2,.8,.2,1)" style-hover="background:var(--accent,#C6402E)">All work <span style="opacity:.55;font-size:13px">9</span></a>
+    </div>
+  </section>
+</main>
+</sc-if>
+
+<sc-if value="{{ isWork }}">
+<main data-screen-label="Work">
+  <section style="background:#EFECE7;color:#17181A;padding:clamp(140px,18vw,220px) 0 clamp(70px,9vw,120px)">
+    <div data-reveal style="padding:0 clamp(20px,5vw,72px)">
+      <h1 style="margin:0;font-size:clamp(60px,10vw,150px);font-weight:550;letter-spacing:-0.035em;line-height:.95">Work<sup style="font-size:.22em;color:var(--accent,#C6402E);font-weight:600;margin-left:16px;letter-spacing:0">(9)</sup></h1>
+      <p style="margin:26px 0 0;font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;opacity:.55">Client &amp; side projects — 2021 → 2025</p>
+    </div>
+    <sc-if value="{{ workIsList }}" hint-placeholder-val="{{ true }}">
+      <div onMouseLeave="{{ clearHover }}" style="border-bottom:1px solid rgba(23,24,26,.14);margin-top:clamp(40px,6vw,70px)">
+        <sc-for list="{{ projects }}" as="item" hint-placeholder-count="6">
+          <div onClick="{{ item.go }}" onMouseEnter="{{ item.enter }}" style="cursor:pointer;border-top:1px solid rgba(23,24,26,.14);transition:background-color .45s ease" style-hover="background-color:rgba(23,24,26,.05)">
+            <div data-r-rowline style="display:flex;align-items:center;gap:clamp(14px,2.6vw,36px);padding:clamp(22px,3vw,34px) clamp(20px,5vw,72px)">
+              <span style="font-size:13px;font-weight:700;color:var(--accent,#C6402E);min-width:26px;font-variant-numeric:tabular-nums">{{ item.idx }}</span>
+              <span data-r-worktitle style="font-size:clamp(26px,3.6vw,56px);font-weight:550;letter-spacing:-0.025em;line-height:1.02">{{ item.title }}</span>
+              <span style="flex:1"></span>
+              <span data-r-rowcat style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;opacity:.5">{{ item.cat }}</span>
+              <span style="font-size:14px;opacity:.6;font-variant-numeric:tabular-nums">{{ item.year }}</span>
+            </div>
+            <div style="{{ item.detailStyle }}">
+              <div data-r-rowpad style="display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;padding:2px clamp(20px,5vw,72px) clamp(22px,3vw,30px) calc(clamp(20px,5vw,72px) + 26px + clamp(14px,2.6vw,36px))">
+                <p style="margin:0;font-size:16px;opacity:.72;max-width:520px">{{ item.desc }}</p>
+                <span style="display:inline-flex;gap:10px;align-items:center;flex-wrap:wrap">
+                  <sc-if value="{{ item.live }}"><a href="{{ item.liveUrl }}" target="_blank" rel="noopener" title="Placeholder — replace with the live URL" onClick="{{ item.stop }}" style="border:1px solid rgba(23,24,26,.3);padding:9px 18px;border-radius:999px;font-size:13px;font-weight:600;transition:background .25s,color .25s,border-color .25s" style-hover="background:#17181A;color:#EFECE7;border-color:#17181A">Live site ↗</a></sc-if>
+                  <sc-if value="{{ item.git }}"><a href="{{ item.gitUrl }}" target="_blank" rel="noopener" onClick="{{ item.stop }}" style="border:1px solid rgba(23,24,26,.3);padding:9px 18px;border-radius:999px;font-size:13px;font-weight:600;transition:background .25s,color .25s,border-color .25s" style-hover="background:#17181A;color:#EFECE7;border-color:#17181A">GitHub ↗</a></sc-if>
+                  <span style="font-size:13px;font-weight:600;color:var(--accent,#C6402E)">Case study →</span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+    <sc-if value="{{ isGrid }}">
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(400px,100%),1fr));gap:clamp(22px,3vw,40px);padding:0 clamp(20px,5vw,72px);margin-top:clamp(40px,6vw,70px)">
+        <sc-for list="{{ projects }}" as="item" hint-placeholder-count="6">
+          <div onClick="{{ item.go }}" style="cursor:pointer">
+            <div style="aspect-ratio:4 / 3;border-radius:22px;background:{{ item.cover }};display:flex;align-items:center;justify-content:center;transition:transform .5s cubic-bezier(.2,.8,.2,1)" style-hover="transform:scale(1.02)">
+              <span style="color:rgba(255,255,255,.93);font-size:clamp(24px,2.4vw,36px);font-weight:600;letter-spacing:-0.02em">{{ item.title }}</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-top:14px;padding:0 4px">
+              <span style="font-size:19px;font-weight:600">{{ item.title }}</span>
+              <span style="font-size:13px;opacity:.55">{{ item.cat }} · {{ item.year }}</span>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+  </section>
+</main>
+</sc-if>
+
+<sc-if value="{{ isProject }}">
+<main data-screen-label="Project detail">
+  <section style="background:#EFECE7;color:#17181A;padding:clamp(130px,16vw,190px) clamp(20px,5vw,72px) clamp(70px,9vw,110px)">
+    <div style="max-width:1400px;margin:0 auto">
+      <a href="#/work" style="font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;opacity:.55;transition:color .25s,opacity .25s" style-hover="opacity:1;color:var(--accent,#C6402E)">← All work</a>
+      <h1 style="margin:.15em 0 0;font-size:clamp(54px,9vw,140px);font-weight:550;letter-spacing:-0.035em;line-height:.98">{{ proj.title }}</h1>
+      <p style="margin:24px 0 0;font-size:clamp(17px,1.5vw,21px);line-height:1.55;max-width:560px;opacity:.75">{{ proj.desc }}</p>
+      <div style="margin-top:clamp(44px,6vw,70px);display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:26px">
+        <div style="border-top:1px solid rgba(23,24,26,.2);padding-top:16px">
+          <div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;opacity:.5">Role</div>
+          <div style="margin-top:12px;font-size:16px;font-weight:550">{{ proj.role }}</div>
+        </div>
+        <div style="border-top:1px solid rgba(23,24,26,.2);padding-top:16px">
+          <div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;opacity:.5">Tech stack</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px">
+            <sc-for list="{{ proj.stack }}" as="tag" hint-placeholder-count="3"><span style="border:1px solid rgba(23,24,26,.25);border-radius:999px;padding:6px 13px;font-size:13px;font-weight:550">{{ tag }}</span></sc-for>
+          </div>
+        </div>
+        <div style="border-top:1px solid rgba(23,24,26,.2);padding-top:16px">
+          <div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;opacity:.5">Year</div>
+          <div style="margin-top:12px;font-size:16px;font-weight:550;font-variant-numeric:tabular-nums">{{ proj.year }}</div>
+        </div>
+        <div style="border-top:1px solid rgba(23,24,26,.2);padding-top:16px">
+          <div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;opacity:.5">Links</div>
+          <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:12px">
+            <sc-if value="{{ proj.live }}"><a href="{{ proj.liveUrl }}" target="_blank" rel="noopener" title="Placeholder — replace with the live URL" style="background:var(--accent,#C6402E);color:#FFFFFF;padding:9px 18px;border-radius:999px;font-size:13px;font-weight:600;transition:background .25s" style-hover="background:#17181A">Live site ↗</a></sc-if>
+            <sc-if value="{{ proj.git }}"><a href="{{ proj.gitUrl }}" target="_blank" rel="noopener" style="border:1px solid rgba(23,24,26,.3);padding:9px 18px;border-radius:999px;font-size:13px;font-weight:600;transition:background .25s,color .25s,border-color .25s" style-hover="background:#17181A;color:#EFECE7;border-color:#17181A">GitHub ↗</a></sc-if>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:clamp(48px,6vw,80px);border-radius:26px;aspect-ratio:16 / 8.5;background:{{ proj.cover }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;overflow:hidden">
+        <span style="color:rgba(255,255,255,.95);font-size:clamp(36px,5.5vw,84px);font-weight:600;letter-spacing:-0.03em">{{ proj.title }}</span>
+        <span style="color:rgba(255,255,255,.5);font-size:11px;letter-spacing:.22em;text-transform:uppercase;font-weight:600">Cover placeholder</span>
+      </div>
+      <div data-r-cols style="margin-top:clamp(60px,8vw,110px);display:grid;grid-template-columns:minmax(160px,240px) 1fr;gap:clamp(28px,4vw,70px)">
+        <div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;opacity:.5">Case study</div>
+        <div style="max-width:760px">
+          <sc-for list="{{ proj.body }}" as="para" hint-placeholder-count="3">
+            <p style="margin:0 0 1.3em;font-size:clamp(17px,1.45vw,21px);line-height:1.65;opacity:.85">{{ para }}</p>
+          </sc-for>
+        </div>
+      </div>
+      <div style="margin-top:clamp(50px,7vw,80px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(360px,100%),1fr));gap:clamp(18px,2.5vw,28px)">
+        <sc-for list="{{ proj.shots }}" as="shot" hint-placeholder-count="3">
+          <div style="{{ shot.style }}"><span style="color:{{ proj.shotFg }};font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;opacity:.85">{{ shot.label }}</span></div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+  <section style="background:#17181A;color:#EFECE7;padding:clamp(80px,10vw,130px) clamp(20px,5vw,72px) 0;text-align:center">
+    <div style="font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;opacity:.5">Next project</div>
+    <a href="{{ nextProj.href }}" style="display:block;margin-top:16px;font-size:clamp(46px,8vw,120px);font-weight:550;letter-spacing:-0.035em;line-height:1;color:#EFECE7;transition:color .3s" style-hover="color:var(--accent,#C6402E)">{{ nextProj.title }}</a>
+    <div style="margin-top:18px;font-size:13px;opacity:.4;font-variant-numeric:tabular-nums">{{ nextCounter }}</div>
+    <div style="margin-top:clamp(60px,8vw,90px);border-top:1px solid rgba(239,236,231,.16)"></div>
+  </section>
+</main>
+</sc-if>
+
+<sc-if value="{{ isAbout }}">
+<main data-screen-label="About">
+  <section style="background:#EFECE7;color:#17181A;padding:clamp(140px,18vw,210px) clamp(20px,5vw,72px) clamp(80px,10vw,130px)">
+    <div style="max-width:1400px;margin:0 auto">
+      <div data-reveal data-r-cols style="display:grid;grid-template-columns:1.25fr .75fr;gap:clamp(36px,6vw,90px);align-items:start">
+        <div>
+          <div style="font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;opacity:.55">About me</div>
+          <h1 style="margin:.3em 0 0;font-size:clamp(50px,7.5vw,110px);font-weight:550;letter-spacing:-0.035em;line-height:.98">Hoi, I'm Alex.</h1>
+          <p style="margin:36px 0 0;font-size:clamp(17px,1.5vw,20px);line-height:1.7;opacity:.85;max-width:640px">I'm a software developer from Basel, Switzerland — the kind who genuinely enjoys both designing a database schema and nudging a border-radius by two pixels.</p>
+          <p style="margin:18px 0 0;font-size:clamp(17px,1.5vw,20px);line-height:1.7;opacity:.85;max-width:640px">Over the last six-plus years I've built booking platforms, dashboards, mobile apps and CMS-driven sites — mostly on .NET, Java and Angular. I like long-lived projects: software you maintain, refine, and still like two years later.</p>
+          <p style="margin:18px 0 0;font-size:clamp(17px,1.5vw,20px);line-height:1.7;opacity:.85;max-width:640px">When I'm not shipping, I'm usually somewhere with a camera and a train ticket. The gallery has the evidence.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:14px;margin-top:40px">
+            <button type="button" data-magnetic title="Hook up your CV PDF here" style="background:var(--accent,#C6402E);color:#FFFFFF;border:none;border-radius:999px;padding:16px 30px;font-size:15px;font-weight:600;font-family:inherit;cursor:pointer;transition:background .3s,transform .35s cubic-bezier(.2,.8,.2,1)" style-hover="background:#17181A">Download CV ↓</button>
+            <a href="#/gallery" data-magnetic style="border:1px solid rgba(23,24,26,.3);border-radius:999px;padding:16px 30px;font-size:15px;font-weight:600;transition:background .3s,color .3s,transform .35s cubic-bezier(.2,.8,.2,1)" style-hover="background:#17181A;color:#EFECE7">See the gallery</a>
+          </div>
+        </div>
+        <div>
+          <img src="uploads/rice.jpg" alt="Alex Uscata" style="width:100%;aspect-ratio:3 / 4;object-fit:cover;object-position:58% 16%;border-radius:22px">
+          <div style="margin-top:12px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;opacity:.45">Off duty — somewhere between deploys</div>
+        </div>
+      </div>
+
+      <div data-reveal style="margin-top:clamp(90px,12vw,150px)">
+        <div style="font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;opacity:.55">Toolbox</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:28px;margin-top:26px">
+          <sc-for list="{{ skills }}" as="grp" hint-placeholder-count="4">
+            <div style="border-top:1px solid rgba(23,24,26,.16);padding-top:18px">
+              <div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;opacity:.5">{{ grp.name }}</div>
+              <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:16px">
+                <sc-for list="{{ grp.items }}" as="tag" hint-placeholder-count="4"><span style="border:1px solid rgba(23,24,26,.25);border-radius:999px;padding:8px 16px;font-size:14px;font-weight:550">{{ tag }}</span></sc-for>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <div data-reveal style="margin-top:clamp(90px,12vw,150px)">
+        <div style="font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;opacity:.55">Contact</div>
+        <div style="margin-top:22px;border-bottom:1px solid rgba(23,24,26,.14)">
+          <a href="mailto:alex@uscata.com" style="display:flex;align-items:baseline;justify-content:space-between;gap:20px;flex-wrap:wrap;border-top:1px solid rgba(23,24,26,.14);padding:24px 2px;transition:color .25s" style-hover="color:var(--accent,#C6402E)">
+            <span style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;opacity:.5">Email</span>
+            <span style="font-size:clamp(20px,2.6vw,34px);font-weight:550;letter-spacing:-0.01em">alex@uscata.com ↗</span>
+          </a>
+          <a href="https://github.com/AlexMarrer" target="_blank" rel="noopener" style="display:flex;align-items:baseline;justify-content:space-between;gap:20px;flex-wrap:wrap;border-top:1px solid rgba(23,24,26,.14);padding:24px 2px;transition:color .25s" style-hover="color:var(--accent,#C6402E)">
+            <span style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;opacity:.5">GitHub</span>
+            <span style="font-size:clamp(20px,2.6vw,34px);font-weight:550;letter-spacing:-0.01em">github.com/AlexMarrer ↗</span>
+          </a>
+          <a href="https://www.linkedin.com/in/alex-uscata/" target="_blank" rel="noopener" title="Placeholder — replace with your LinkedIn URL" style="display:flex;align-items:baseline;justify-content:space-between;gap:20px;flex-wrap:wrap;border-top:1px solid rgba(23,24,26,.14);padding:24px 2px;transition:color .25s" style-hover="color:var(--accent,#C6402E)">
+            <span style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;opacity:.5">LinkedIn</span>
+            <span style="font-size:clamp(20px,2.6vw,34px);font-weight:550;letter-spacing:-0.01em">linkedin.com/in/alex-uscata ↗</span>
+          </a>
+          <div style="display:flex;align-items:baseline;justify-content:space-between;gap:20px;flex-wrap:wrap;border-top:1px solid rgba(23,24,26,.14);padding:24px 2px">
+            <span style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;opacity:.5">Location</span>
+            <span style="font-size:clamp(20px,2.6vw,34px);font-weight:550;letter-spacing:-0.01em">Basel, Switzerland</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+</sc-if>
+
+<sc-if value="{{ isGallery }}">
+<main data-screen-label="Gallery">
+  <section style="background:#EFECE7;color:#17181A;padding:clamp(140px,18vw,210px) clamp(20px,5vw,72px) clamp(80px,10vw,130px)">
+    <div style="max-width:1400px;margin:0 auto">
+      <div data-reveal>
+        <div style="font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;opacity:.55">Gallery</div>
+        <h1 style="margin:.25em 0 0;font-size:clamp(54px,8.5vw,130px);font-weight:550;letter-spacing:-0.035em;line-height:.96">Off the clock</h1>
+        <p style="margin:26px 0 0;font-size:17px;line-height:1.6;opacity:.65;max-width:520px">Photographs from the road. Neutral placeholders are holding the fort until the real photos land.</p>
+      </div>
+      <sc-for list="{{ trips }}" as="trip" hint-placeholder-count="3">
+        <div style="margin-top:clamp(70px,9vw,110px)">
+          <div data-reveal style="display:flex;align-items:baseline;gap:18px;flex-wrap:wrap;border-top:1px solid rgba(23,24,26,.14);padding-top:22px">
+            <span style="font-size:13px;font-weight:700;color:var(--accent,#C6402E);font-variant-numeric:tabular-nums">{{ trip.idx }}</span>
+            <h2 style="margin:0;font-size:clamp(24px,3vw,42px);font-weight:550;letter-spacing:-0.02em">{{ trip.name }}</h2>
+            <span style="flex:1"></span>
+            <span style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;opacity:.5">{{ trip.meta }}</span>
+          </div>
+          <div style="column-width:320px;column-gap:18px;margin-top:28px">
+            <sc-for list="{{ trip.shots }}" as="shot" hint-placeholder-count="4">
+              <div onClick="{{ shot.open }}" style="background:{{ shot.tone }};aspect-ratio:{{ shot.ar }};border-radius:16px;break-inside:avoid;margin-bottom:18px;position:relative;cursor:pointer;overflow:hidden;transition:transform .45s cubic-bezier(.2,.8,.2,1)" style-hover="transform:scale(1.015)">
+                <span style="position:absolute;left:16px;bottom:13px;color:rgba(255,255,255,.9);font-size:12px;font-weight:550;letter-spacing:.02em">{{ shot.cap }}</span>
+                <span style="position:absolute;right:16px;top:13px;color:rgba(255,255,255,.55);font-size:11px;font-variant-numeric:tabular-nums">{{ shot.num }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+</main>
+</sc-if>
+
+<footer data-screen-label="Footer" style="background:#17181A;color:#EFECE7;padding:clamp(90px,12vw,160px) clamp(20px,5vw,72px) 30px">
+  <div style="max-width:1400px;margin:0 auto">
+    <div data-reveal style="display:flex;align-items:center;gap:20px">
+      <img src="uploads/rice.jpg" alt="Alex" style="width:52px;height:52px;border-radius:50%;object-fit:cover;object-position:58% 12%">
+      <span style="font-size:13px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;opacity:.6">Got a project in mind?</span>
+    </div>
+    <h2 style="margin:26px 0 0;font-size:clamp(46px,7.5vw,116px);font-weight:550;letter-spacing:-0.035em;line-height:1.02;max-width:12em">Let's build something together</h2>
+    <div style="position:relative;margin-top:clamp(56px,8vw,100px)">
+      <div style="border-top:1px solid rgba(239,236,231,.22)"></div>
+      <a href="mailto:alex@uscata.com" data-magnetic style="position:absolute;right:clamp(8px,8vw,120px);top:0;transform:translateY(-50%);width:clamp(122px,12vw,164px);aspect-ratio:1;border-radius:50%;background:var(--accent,#C6402E);color:#FFFFFF;display:flex;align-items:center;justify-content:center;text-align:center;font-size:16px;font-weight:600;transition:background .35s,transform .35s cubic-bezier(.2,.8,.2,1)" style-hover="background:#EFECE7;color:#17181A">Get in touch</a>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:14px;margin-top:clamp(56px,8vw,96px)">
+      <a href="mailto:alex@uscata.com" data-magnetic style="border:1px solid rgba(239,236,231,.3);border-radius:999px;padding:16px 28px;font-size:16px;font-weight:550;transition:background .3s,color .3s,transform .35s cubic-bezier(.2,.8,.2,1)" style-hover="background:#EFECE7;color:#17181A">alex@uscata.com</a>
+      <span style="border:1px solid rgba(239,236,231,.16);border-radius:999px;padding:16px 28px;font-size:16px;font-weight:500;opacity:.7">Basel, Switzerland</span>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:26px;align-items:flex-end;justify-content:space-between;margin-top:clamp(70px,9vw,110px);border-top:1px solid rgba(239,236,231,.14);padding-top:26px">
+      <div>
+        <div style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;opacity:.4">Version</div>
+        <div style="margin-top:7px;font-size:14px;opacity:.85">© 2026 Alex Uscata</div>
+      </div>
+      <div>
+        <div style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;opacity:.4">Local time</div>
+        <div style="margin-top:7px;font-size:14px;opacity:.85;font-variant-numeric:tabular-nums">{{ time }} · Basel</div>
+      </div>
+      <div style="display:flex;gap:22px">
+        <a href="https://github.com/AlexMarrer" target="_blank" rel="noopener" style="font-size:14px;opacity:.85;transition:color .25s" style-hover="color:var(--accent,#C6402E)">GitHub</a>
+        <a href="https://www.linkedin.com/in/alex-uscata/" target="_blank" rel="noopener" style="font-size:14px;opacity:.85;transition:color .25s" style-hover="color:var(--accent,#C6402E)">LinkedIn</a>
+        <a href="mailto:alex@uscata.com" style="font-size:14px;opacity:.85;transition:color .25s" style-hover="color:var(--accent,#C6402E)">Email</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div ref="{{ pvRef }}" style="position:fixed;left:0;top:0;z-index:70;pointer-events:none;will-change:transform">
+  <div style="{{ pvStyle }}">
+    <span style="color:rgba(255,255,255,.95);font-size:26px;font-weight:600;letter-spacing:-0.02em">{{ pvTitle }}</span>
+    <span style="margin-top:8px;color:rgba(255,255,255,.7);font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:600">{{ pvCat }}</span>
+  </div>
+</div>
+
+<sc-if value="{{ lbOn }}">
+  <div onClick="{{ lbClose }}" style="position:fixed;inset:0;z-index:90;background:rgba(15,16,18,.95);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:5vh 5vw">
+    <div style="{{ lbStyle }}">
+      <span style="color:rgba(255,255,255,.35);font-size:11px;letter-spacing:.22em;text-transform:uppercase;font-weight:600">Photo placeholder</span>
+    </div>
+    <div style="color:#EFECE7;display:flex;gap:16px;align-items:baseline;flex-wrap:wrap;justify-content:center">
+      <span style="font-size:16px;font-weight:550">{{ lbCap }}</span>
+      <span style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;opacity:.5">{{ lbMeta }}</span>
+    </div>
+    <button type="button" onClick="{{ lbPrev }}" aria-label="Previous photo" style="position:absolute;left:26px;top:50%;transform:translateY(-50%);width:54px;height:54px;border-radius:50%;border:1px solid rgba(239,236,231,.35);background:transparent;color:#EFECE7;font-size:20px;cursor:pointer;font-family:inherit;transition:background .25s" style-hover="background:rgba(239,236,231,.15)">←</button>
+    <button type="button" onClick="{{ lbNext }}" aria-label="Next photo" style="position:absolute;right:26px;top:50%;transform:translateY(-50%);width:54px;height:54px;border-radius:50%;border:1px solid rgba(239,236,231,.35);background:transparent;color:#EFECE7;font-size:20px;cursor:pointer;font-family:inherit;transition:background .25s" style-hover="background:rgba(239,236,231,.15)">→</button>
+    <button type="button" onClick="{{ lbClose }}" aria-label="Close" style="position:absolute;right:26px;top:26px;width:46px;height:46px;border-radius:50%;border:1px solid rgba(239,236,231,.35);background:transparent;color:#EFECE7;font-size:17px;cursor:pointer;font-family:inherit;transition:background .25s" style-hover="background:rgba(239,236,231,.15)">✕</button>
+  </div>
+</sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;accentColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;default&quot;:&quot;#C6402E&quot;,&quot;options&quot;:[&quot;#C6402E&quot;,&quot;#3050D8&quot;,&quot;#1F6B56&quot;,&quot;#B4690E&quot;],&quot;section&quot;:&quot;Style&quot;},&quot;marqueeSpeed&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;default&quot;:26,&quot;min&quot;:10,&quot;max&quot;:60,&quot;step&quot;:1,&quot;unit&quot;:&quot;s&quot;,&quot;section&quot;:&quot;Hero&quot;},&quot;workLayout&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;default&quot;:&quot;list&quot;,&quot;options&quot;:[&quot;list&quot;,&quot;grid&quot;],&quot;section&quot;:&quot;Work page&quot;}}">
+class Component extends DCLogic {
+  state = { route: { page: 'home', slug: null }, hp: null, lb: null, time: '' };
+  pv = React.createRef();
+
+  projects = (() => {
+    const P = (slug, title, cat, year, role, stack, desc, hue, opts, body, shots) => ({
+      slug, title, cat, year, role, stack, desc, hue,
+      live: !!(opts && opts.live), git: !!(opts && opts.git), featured: !!(opts && opts.f),
+      liveUrl: 'https://example.com', gitUrl: 'https://github.com/AlexMarrer/' + slug,
+      cover: `linear-gradient(135deg, oklch(71% 0.055 ${hue}), oklch(42% 0.095 ${hue}))`,
+      shotBg: `oklch(90% 0.022 ${hue})`, shotFg: `oklch(42% 0.07 ${hue})`,
+      body, shots
+    });
+    return [
+      P('alpenblick', 'Alpenblick', 'Web platform', '2025', 'Full-stack development', ['Angular', 'ASP.NET Core', 'MSSQL'],
+        'Booking platform for independent mountain lodges across the Alps.', 160, { live: 1, git: 1, f: 1 },
+        ["Alpenblick connects hikers with 140+ independent mountain lodges that used to take bookings by phone and paper calendar. The brief: make booking a hut as easy as booking a hotel — without losing the charm.",
+         "I built the booking engine on ASP.NET Core with an MSSQL backbone, and an Angular frontend that keeps working on a spotty connection at 2,800 metres. Availability syncs offline-first and reconciles once the hut warden regains signal.",
+         "Since launch, partner lodges report roughly a third less admin time per season — and I've personally tested the product more than professionally necessary."],
+        ['Booking flow', 'Warden dashboard', 'Availability calendar']),
+      P('trackwerk', 'Trackwerk', 'Dashboard', '2024', 'Frontend & API development', ['Angular', 'SignalR', 'PostgreSQL'],
+        'Real-time logistics dashboard for a regional freight carrier.', 235, { git: 1, f: 1 },
+        ["Trackwerk gives dispatchers a live picture of 300 vehicles, replacing a wall of spreadsheets and two-way radio guesswork.",
+         "SignalR pushes fleet events into an Angular dashboard tuned to stay smooth with thousands of live markers; PostgreSQL with PostGIS does the geo-heavy lifting underneath.",
+         "Dispatch response times dropped measurably in the first quarter — and the radio is now mostly used for good-morning banter."],
+        ['Live map', 'Vehicle detail', 'Shift planner']),
+      P('mundo', 'Mundo', 'Mobile app', '2024', 'Design & development', ['Ionic', 'Angular', 'MongoDB'],
+        'A quiet little travel journal app — offline first, ad free.', 25, { git: 1, f: 1 },
+        ["Mundo is my own itch, scratched: a travel journal that works in airplane mode, respects your photos and never asks you to 'go premium'.",
+         "Built with Ionic and Angular on a MongoDB sync layer — entries are geotagged, photographed and searchable. Everything is stored locally first and syncs when it can.",
+         "It quietly powers the Gallery page on this site: every trip you see there started as a Mundo entry."],
+        ['Journal timeline', 'Entry editor', 'Map of trips']),
+      P('kantina', 'Kantina', 'Mobile app', '2023', 'Full-stack development', ['Ionic', 'Spring Boot', 'PostgreSQL'],
+        'Pre-order app for a company canteen — skip the queue at noon.', 95, {},
+        ["Kantina lets 900 employees order lunch before the rush and pick it up on a dedicated shelf. The queue at 12:02 was the real client.",
+         "A Spring Boot API balances kitchen load with capacity-based time slots; the Ionic app talks to the badge system, so pickup is a single scan.",
+         "Around 60% of the kitchen's daily orders now arrive through the app, and lunchtime feels a lot less like boarding a budget flight."],
+        ['Menu of the day', 'Slot picker', 'Kitchen board']),
+      P('atelier-frei', 'Atelier Frei', 'Website & shop', '2023', 'Design & development', ['Craft CMS', 'PHP'],
+        'Portfolio and small shop for a Basel ceramics studio.', 70, { live: 1, f: 1 },
+        ["Sabine Frei makes beautiful ceramics; her old site made them look like stock photos. We rebuilt it around big, honest photography and very little else.",
+         "Craft CMS gives her full control over pieces, firings and exhibition dates; a lightweight PHP shop handles the twelve-items-a-month sales volume without a heavyweight platform.",
+         "The site now does the quiet selling — most pieces sell out within days of a kiln post."],
+        ['Collection grid', 'Piece detail', 'Studio journal']),
+      P('papierwerk', 'Papierwerk', 'Web app', '2022', 'Backend development', ['C#', 'ASP.NET', 'MSSQL'],
+        'Document workflow suite for a fiduciary — goodbye, shared-drive chaos.', 265, {},
+        ["Papierwerk routes contracts, payroll and tax documents through review chains that used to live in email threads titled 'FINAL_v7_really'.",
+         "I focused on the backend: an ASP.NET service layer with a strict audit trail, role-based access and full-text search across fifteen years of archived PDFs.",
+         "Auditors now get read-only access instead of a conference room full of binders. Everyone involved considers this a win."],
+        ['Review chain', 'Archive search', 'Audit log']),
+      P('velora', 'Velora', 'Web platform', '2022', 'Full-stack development', ['Spring Boot', 'Angular', 'PostgreSQL'],
+        'Community platform for cycling routes — built by riders, for riders.', 145, { git: 1 },
+        ["Velora is where a local cycling club shares, rates and argues about routes. Think of it as a very polite comment section with elevation profiles.",
+         "Spring Boot and PostGIS crunch GPX uploads into comparable segments; an Angular frontend renders the profiles and turns the eternal gravel-versus-road debate into filters.",
+         "3,000 riders and 11,000 routes later, the whole thing still runs on a single modest VPS — a point of personal pride."],
+        ['Route explorer', 'Elevation profile', 'Club leaderboard']),
+      P('klangraum', 'Klangraum', 'Website', '2021', 'Development', ['Craft CMS', 'PHP', 'PostgreSQL'],
+        'Site and ticketing for a small Basel music venue.', 320, { live: 1 },
+        ["Klangraum hosts jazz on Thursdays and everything else on weekends. The site had to feel like the room: dark, warm and a little analog.",
+         "Craft CMS drives the programme; a slim PHP ticketing flow with QR door lists replaced a paid platform that ate 8% of every ticket.",
+         "The venue kept its margins and I kept a permanent spot on the guest list. Fair trade."],
+        ['Programme', 'Event page', 'Door list']),
+      P('uhrwerk', 'Uhrwerk', 'Web app', '2021', 'Full-stack development', ['C#', '.NET', 'Angular'],
+        'Time tracking for small agencies — honest hours, zero drama.', 210, { git: 1 },
+        ["Uhrwerk started as a weekend project when my then-agency's tracking tool billed us for fixing its own bugs. It tracked time; mostly it wasted ours.",
+         "A pragmatic .NET API, an Angular frontend and exactly the features a ten-person agency needs: timers, budgets, exports. Nothing else.",
+         "It's open source, it's opinionated, and three agencies I've never met run their books on it. The internet is occasionally lovely."],
+        ['Week view', 'Budget overview', 'Export'])
+    ];
+  })();
+
+  tripsData = [
+    { name: 'Bernese Oberland', meta: 'Switzerland · 2025 · 6 photos',
+      tones: ['#9AA4AC', '#7E8A94', '#B7BEC4', '#5E6A73', '#A9B4B0', '#8B979E'],
+      shots: [['3 / 4', .75, 'Kleine Scheidegg, first light'], ['4 / 3', 1.333, 'Eiger north face'], ['1 / 1', 1, 'Grindelwald fog'], ['3 / 4', .75, 'Trail marker, Männlichen'], ['16 / 11', 1.4545, 'Cablecar window'], ['3 / 4', .75, 'Lauterbrunnen valley']] },
+    { name: 'Lisbon', meta: 'Portugal · 2024 · 5 photos',
+      tones: ['#C8A288', '#B0785A', '#D9C3A5', '#8A5B45', '#C9976B'],
+      shots: [['4 / 3', 1.333, 'Alfama rooftops'], ['3 / 4', .75, 'Tram 28, rush hour'], ['1 / 1', 1, 'Azulejos, Rua da Bica'], ['16 / 11', 1.4545, 'Tejo at golden hour'], ['3 / 4', .75, 'Pastéis, obviously']] },
+    { name: 'Tokyo', meta: 'Japan · 2023 · 6 photos',
+      tones: ['#8E8E93', '#5C5F66', '#B5B2AB', '#3E4148', '#9BA0A8', '#767B72'],
+      shots: [['3 / 4', .75, 'Shinjuku after rain'], ['1 / 1', 1, 'Vending machines, 2 a.m.'], ['4 / 3', 1.333, 'Meiji shrine forest'], ['3 / 4', .75, 'Yamanote platform'], ['16 / 11', 1.4545, 'Golden Gai lanterns'], ['4 / 3', 1.333, 'Fuji from the train']] }
+  ];
+
+  skills = [
+    { name: 'Backend', items: ['C#', 'ASP.NET Core', 'Java', 'Spring Boot', 'PHP'] },
+    { name: 'Frontend', items: ['Angular', 'Ionic', 'TypeScript'] },
+    { name: 'Databases', items: ['MSSQL', 'PostgreSQL', 'MongoDB'] },
+    { name: 'CMS & Web', items: ['Craft CMS', 'REST APIs', 'CI/CD'] }
+  ];
+
+  parseHash() {
+    const h = (location.hash || '').replace(/^#\/?/, '');
+    const [p, s] = h.split('/');
+    if (p === 'project' && s) return { page: 'project', slug: s };
+    if (['work', 'about', 'gallery'].includes(p)) return { page: p, slug: null };
+    return { page: 'home', slug: null };
+  }
+
+  applyVars() {
+    const el = document.documentElement;
+    el.style.setProperty('--accent', this.props.accentColor ?? '#C6402E');
+    el.style.setProperty('--mqd', (Number(this.props.marqueeSpeed ?? 26)) + 's');
+  }
+
+  scan() {
+    if (!this._io) return;
+    document.querySelectorAll('[data-reveal]:not([data-rv])').forEach(el => {
+      el.setAttribute('data-rv', '1');
+      const r = el.getBoundingClientRect();
+      if (r.top > innerHeight * 0.86) {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(34px)';
+        el.style.transition = 'opacity .8s cubic-bezier(.2,.65,.3,1), transform .8s cubic-bezier(.2,.65,.3,1)';
+        this._io.observe(el);
+      }
+    });
+  }
+
+  lbStep(d) {
+    const lb = this.state.lb;
+    if (!lb) return;
+    const n = this.tripsData[lb.t].shots.length;
+    this.setState({ lb: { t: lb.t, i: (lb.i + d + n) % n } });
+  }
+
+  componentDidMount() {
+    this._onHash = () => this.setState({ route: this.parseHash(), hp: null, lb: null });
+    addEventListener('hashchange', this._onHash);
+    const r = this.parseHash();
+    if (r.page !== 'home') this.setState({ route: r });
+    const tick = () => this.setState({ time: new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Zurich' }).format(new Date()) });
+    tick();
+    this._clk = setInterval(tick, 20000);
+    this._io = new IntersectionObserver(es => es.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0px)';
+        this._io.unobserve(e.target);
+      }
+    }), { threshold: 0.12 });
+    this.scan();
+    this._pt = { x: innerWidth / 2, y: innerHeight / 2 };
+    this._pp = { x: this._pt.x, y: this._pt.y };
+    this._onMove = (e) => {
+      this._pt = { x: e.clientX, y: e.clientY };
+      const m = e.target && e.target.closest ? e.target.closest('[data-magnetic]') : null;
+      if (this._mag && this._mag !== m) this._mag.style.transform = this._mag.dataset.baseTf || '';
+      if (m) {
+        if (m.dataset.baseTf === undefined) m.dataset.baseTf = m.style.transform || '';
+        const r2 = m.getBoundingClientRect();
+        const dx = (e.clientX - r2.left - r2.width / 2) * 0.25;
+        const dy = (e.clientY - r2.top - r2.height / 2) * 0.35;
+        m.style.transform = `${m.dataset.baseTf} translate(${dx}px, ${dy}px)`;
+      }
+      this._mag = m;
+    };
+    document.addEventListener('mousemove', this._onMove);
+    const loop = () => {
+      this._raf = requestAnimationFrame(loop);
+      const el = this.pv.current;
+      if (!el) return;
+      this._pp.x += (this._pt.x - this._pp.x) * 0.13;
+      this._pp.y += (this._pt.y - this._pp.y) * 0.13;
+      el.style.transform = `translate3d(${this._pp.x + 30}px, ${this._pp.y - 110}px, 0)`;
+    };
+    loop();
+    this._onKey = (e) => {
+      if (!this.state.lb) return;
+      if (e.key === 'Escape') this.setState({ lb: null });
+      if (e.key === 'ArrowRight') this.lbStep(1);
+      if (e.key === 'ArrowLeft') this.lbStep(-1);
+    };
+    addEventListener('keydown', this._onKey);
+    this.applyVars();
+  }
+
+  componentWillUnmount() {
+    removeEventListener('hashchange', this._onHash);
+    removeEventListener('keydown', this._onKey);
+    document.removeEventListener('mousemove', this._onMove);
+    clearInterval(this._clk);
+    cancelAnimationFrame(this._raf);
+    if (this._io) this._io.disconnect();
+  }
+
+  componentDidUpdate() {
+    const cur = JSON.stringify(this.state.route);
+    if (this._lastRoute !== cur) {
+      this._lastRoute = cur;
+      scrollTo(0, 0);
+      requestAnimationFrame(() => this.scan());
+    }
+    this.applyVars();
+  }
+
+  renderVals() {
+    const { route, hp, lb, time } = this.state;
+    const projects = this.projects.map((p, i) => {
+      const open = !!hp && hp.slug === p.slug;
+      return {
+        ...p,
+        idx: String(i + 1).padStart(2, '0'),
+        href: '#/project/' + p.slug,
+        go: () => { location.hash = '#/project/' + p.slug; },
+        enter: () => this.setState({ hp: p }),
+        stop: (e) => e.stopPropagation(),
+        detailStyle: {
+          overflow: 'hidden',
+          maxHeight: open ? '340px' : '0px',
+          opacity: open ? 1 : 0,
+          transform: open ? 'translateY(0px)' : 'translateY(12px)',
+          transition: open
+            ? 'max-height .65s cubic-bezier(.3,.9,.25,1), opacity .5s ease .12s, transform .6s cubic-bezier(.2,.8,.2,1) .12s'
+            : 'max-height .5s cubic-bezier(.3,.9,.25,1), opacity .3s ease, transform .4s ease'
+        }
+      };
+    });
+    const featured = projects.filter(p => p.featured);
+    const isProject = route.page === 'project';
+    const pi = isProject ? Math.max(0, this.projects.findIndex(p => p.slug === route.slug)) : 0;
+    const base = projects[pi];
+    const proj = {
+      ...base,
+      shots: base.shots.map((label, i) => ({
+        label: base.title + ' — ' + label,
+        style: {
+          background: base.shotBg,
+          aspectRatio: i === 0 ? '16 / 9' : '4 / 3',
+          gridColumn: i === 0 ? '1 / -1' : 'auto',
+          borderRadius: '22px',
+          display: 'flex', alignItems: 'center', justifyContent: 'center'
+        }
+      }))
+    };
+    const nextProj = projects[(pi + 1) % projects.length];
+    const navLinks = [['Home', '#/', 'home'], ['Work', '#/work', 'work'], ['About', '#/about', 'about'], ['Gallery', '#/gallery', 'gallery']]
+      .map(([label, href, key]) => ({ label, href, on: route.page === key || (key === 'work' && isProject) }));
+    const trips = this.tripsData.map((t, ti) => ({
+      ...t,
+      idx: String(ti + 1).padStart(2, '0'),
+      shots: t.shots.map(([ar, arn, cap], si) => ({
+        ar, cap,
+        num: String(si + 1).padStart(2, '0'),
+        tone: t.tones[si % t.tones.length],
+        open: () => this.setState({ lb: { t: ti, i: si } })
+      }))
+    }));
+    const lbTrip = lb ? this.tripsData[lb.t] : null;
+    const lbShot = lbTrip ? lbTrip.shots[lb.i] : null;
+    return {
+      isHome: route.page === 'home', isWork: route.page === 'work', isAbout: route.page === 'about',
+      isGallery: route.page === 'gallery', isProject,
+      workIsList: route.page === 'work' && (this.props.workLayout ?? 'list') !== 'grid',
+      isGrid: route.page === 'work' && (this.props.workLayout ?? 'list') === 'grid',
+      navLinks, projects, featured, proj, nextProj,
+      nextCounter: nextProj.idx + ' / 09',
+      trips, time,
+      clearHover: () => this.setState({ hp: null }),
+      pvRef: this.pv,
+      pvTitle: hp ? hp.title : '', pvCat: hp ? hp.cat : '',
+      pvStyle: {
+        width: 'min(24vw, 330px)', aspectRatio: '4 / 3', borderRadius: '18px',
+        background: hp ? hp.cover : 'transparent',
+        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+        opacity: hp ? 1 : 0, transform: hp ? 'scale(1)' : 'scale(.8)',
+        transition: 'opacity .28s ease, transform .38s cubic-bezier(.2,.8,.2,1)',
+        boxShadow: '0 30px 60px rgba(0,0,0,.18)'
+      },
+      lbOn: !!lb,
+      lbStyle: lbShot ? {
+        background: lbTrip.tones[lb.i % lbTrip.tones.length],
+        aspectRatio: lbShot[0],
+        width: `min(86vw, ${Math.round(72 * lbShot[1])}vh)`,
+        borderRadius: '18px',
+        display: 'flex', alignItems: 'center', justifyContent: 'center'
+      } : {},
+      lbCap: lbShot ? lbShot[2] : '',
+      lbMeta: lbTrip ? `${lbTrip.name} · ${lb.i + 1} / ${lbTrip.shots.length}` : '',
+      lbClose: () => this.setState({ lb: null }),
+      lbPrev: (e) => { e.stopPropagation(); this.lbStep(-1); },
+      lbNext: (e) => { e.stopPropagation(); this.lbStep(1); }
+    };
+  }
+}
+</script>
+</body>
+</html>
