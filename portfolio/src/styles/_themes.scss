@@ -1,0 +1,25 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// Light/dark SECTION theming — the whole approach lives in this one file.
+//
+// The design alternates light (#EFECE7) and dark (#17181A) sections on every
+// page. Instead of per-component dark overrides (or ::ng-deep — never), a
+// section opts into the dark palette with ONE class; every descendant that
+// styles itself with var(--bg)/var(--ink)/var(--hairline) follows along
+// automatically. :root (in _tokens.scss) IS the light theme.
+//
+// Usage:  <section class="theme-dark">…</section>
+// ─────────────────────────────────────────────────────────────────────────────
+
+@use 'tokens';
+
+.theme-dark {
+  --bg: #{tokens.$ink};
+  --ink: #{tokens.$bg-light};
+  --hairline: #{tokens.$hairline-on-dark};
+  --hairline-strong: #{tokens.$hairline-on-dark-strong};
+  // E4: small accent text needs a brighter red on dark (see _tokens.scss).
+  --accent-text: #{tokens.$accent-text-on-dark};
+
+  background: var(--bg);
+  color: var(--ink);
+}

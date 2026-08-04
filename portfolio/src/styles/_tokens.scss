@@ -1,0 +1,87 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// Design tokens — single source of truth, mirrored from
+// design_handoff_portfolio/README.md (§ Design Tokens). Two layers:
+//
+//   1. SCSS variables  → for build-time use (media queries, mixins, math).
+//   2. CSS custom props (:root, below) → for runtime use in component styles
+//      and for the light/dark section theming (_themes.scss flips them).
+//
+// Component styles should reach for var(--…) first; SCSS vars are for the
+// things custom props can't do (breakpoints in @media, mixin params).
+// ─────────────────────────────────────────────────────────────────────────────
+
+@use 'sass:map';
+
+// ── Colors ───────────────────────────────────────────────────────────────────
+$bg-light: #efece7; // warm off-white
+$ink: #17181a; // dark background / primary ink
+$accent: #c6402e; // red — ONE strong accent per section
+// Accent alternates (README): #3050D8 · #1F6B56 · #B4690E
+// E4 (RESOLVED — two-tier accent): $accent is for FILLS and large text only
+// (white-on-accent = 5.03:1 ✓). Small accent text (< ~19px: row/trip numbers,
+// "Case study →", "/ 04", sup counts, hover-accent on small links) uses
+// var(--accent-text) instead — #C6402E is only 4.27:1 on light / 3.53:1 on
+// dark. The light value lives here; .theme-dark overrides it (_themes.scss).
+$accent-text-on-light: #b23a29; // 5.05:1 on $bg-light
+$accent-text-on-dark: #e05a44; // 4.83:1 on $ink
+$hairline-on-light: rgba(23, 24, 26, 0.14);
+$hairline-on-light-strong: rgba(23, 24, 26, 0.3); // outline pills
+$hairline-on-dark: rgba(239, 236, 231, 0.16);
+$hairline-on-dark-strong: rgba(239, 236, 231, 0.3);
+
+// ── Typography ───────────────────────────────────────────────────────────────
+$font-sans: 'Hanken Grotesk', ui-sans-serif, system-ui, sans-serif;
+$fs-display: clamp(70px, 11.5vw, 200px); // hero marquee
+$fs-row-title: clamp(26px, 3.6vw, 56px); // project rows
+$fs-body: 17px;
+$lh-body: 1.65;
+$ls-display: -0.035em;
+$ls-title: -0.025em;
+// Small uppercase labels: 11–12px, letter-spacing .14–.18em, weight 600,
+// ~50–55% opacity. Page-title clamps differ per view — exact values live in
+// each view's spec, don't invent a shared token for them.
+
+// ── Spacing & radii ──────────────────────────────────────────────────────────
+$gutter: clamp(20px, 5vw, 72px);
+$section-pad: clamp(80px, 10vw, 140px);
+$section-pad-tall: clamp(90px, 12vw, 170px);
+$max-width: 1400px;
+$r-pill: 999px;
+$r-card: 16px; // gallery tiles
+$r-card-md: 18px; // cursor-preview / lightbox stage
+$r-card-lg: 22px; // about portrait, shot cards
+$r-card-xl: 26px; // project cover
+
+// ── Breakpoints (README: ≤922 / ≤768 / ≤360) ────────────────────────────────
+$bp-md: 922px;
+$bp-sm: 768px;
+$bp-xs: 360px;
+
+@mixin down($bp) {
+  @media (max-width: $bp) {
+    @content;
+  }
+}
+
+// ── Motion ───────────────────────────────────────────────────────────────────
+$ease-reveal: cubic-bezier(0.2, 0.65, 0.3, 1); // entrances, scroll reveals
+$ease-hover: cubic-bezier(0.2, 0.8, 0.2, 1); // magnetic spring, hover scale
+$ease-expand: cubic-bezier(0.3, 0.9, 0.25, 1); // row expand/collapse
+$marquee-duration: 26s; // tweakable 10–60s
+
+// ── Runtime layer ────────────────────────────────────────────────────────────
+:root {
+  --bg: #{$bg-light};
+  --ink: #{$ink};
+  --accent: #{$accent};
+  --accent-text: #{$accent-text-on-light};
+  --accent-contrast: #ffffff;
+  --hairline: #{$hairline-on-light};
+  --hairline-strong: #{$hairline-on-light-strong};
+  --font-sans: #{$font-sans};
+  --gutter: #{$gutter};
+  --section-pad: #{$section-pad};
+  --section-pad-tall: #{$section-pad-tall};
+  --max-width: #{$max-width};
+  --marquee-duration: #{$marquee-duration};
+}

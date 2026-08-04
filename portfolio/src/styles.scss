@@ -1,0 +1,28 @@
+// Global entry — @use only (never @import: deprecated in Dart Sass).
+@use 'styles/fonts';
+@use 'styles/tokens';
+@use 'styles/reset';
+@use 'styles/themes';
+
+html {
+  background: var(--bg);
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: tokens.$fs-body;
+  line-height: tokens.$lh-body;
+  background: var(--bg);
+  color: var(--ink);
+}
+
+// Semantic-heading helper: the hero's real <h1> is visually the marquee, so the
+// accessible one is hidden with this (see specs/02-home.md).
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

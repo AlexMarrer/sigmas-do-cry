@@ -1,0 +1,19 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// Hanken Grotesk — self-hosted VARIABLE font (wght 300–800).
+//
+// ⚠ LANDMINE D5: the design uses font-weight 550 (titles) and 500/600/700.
+// Static Google-Fonts weights would snap 550 → 600 and change the whole
+// typographic voice — only the variable axis renders it. Self-hosting also
+// avoids the render-blocking Google request and the GDPR hotlinking issue.
+//
+// The woff2 is copied from @fontsource-variable/hanken-grotesk into
+// public/fonts/ and preloaded in index.html.
+// ─────────────────────────────────────────────────────────────────────────────
+
+@font-face {
+  font-family: 'Hanken Grotesk';
+  font-style: normal;
+  font-weight: 300 800;
+  font-display: swap;
+  src: url('/fonts/hanken-grotesk-variable.woff2') format('woff2-variations');
+}
