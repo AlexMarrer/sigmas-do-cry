@@ -7,6 +7,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 @Component({
   selector: 'app-lightbox',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `<!-- TODO(spec: specs/lightbox.md) -->`,
+  templateUrl: './lightbox.html',
+  styleUrls: ['./lightbox.scss'],
 })
 export class Lightbox {}

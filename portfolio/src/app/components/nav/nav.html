@@ -1,0 +1,61 @@
+<!-- spec: specs/01-nav.md — everything inside .nav is white; the .nav blend inverts it -->
+<div class="nav">
+  <div class="nav__bar">
+    <a class="nav__brand" routerLink="/" (click)="closeMenu()">© Alex Uscata</a>
+
+    <div class="nav__pills">
+      @for (link of links; track link.path) {
+        <a
+          class="nav__pill"
+          [routerLink]="link.path"
+          routerLinkActive="nav__pill--active"
+          [routerLinkActiveOptions]="{ exact: link.exact }"
+          ariaCurrentWhenActive="page"
+        >
+          {{ link.label }}
+          <span class="nav__dot"></span>
+        </a>
+      }
+    </div>
+
+    <button
+      #burger
+      type="button"
+      class="nav__burger"
+      [class.nav__burger--open]="menuOpen()"
+      [attr.aria-expanded]="menuOpen()"
+      aria-controls="nav-menu"
+      aria-label="Menu"
+      (click)="toggleMenu()"
+    >
+      <span class="nav__burger-line"></span>
+      <span class="nav__burger-line"></span>
+    </button>
+  </div>
+</div>
+
+<!-- ⚠ Sibling of .nav, NOT a child: a full-screen sheet inside the difference-
+     blend context would invert against the whole page. Its z-index sits below
+     the bar's, so brand + X stay on top and keep blending against the sheet. -->
+@if (menuOpen()) {
+  <nav
+    #menu
+    id="nav-menu"
+    class="nav-menu theme-dark"
+    tabindex="-1"
+    aria-label="Site navigation"
+  >
+    @for (link of links; track link.path) {
+      <a
+        class="nav-menu__link"
+        [routerLink]="link.path"
+        routerLinkActive="nav-menu__link--active"
+        [routerLinkActiveOptions]="{ exact: link.exact }"
+        ariaCurrentWhenActive="page"
+        (click)="closeMenu()"
+      >
+        {{ link.label }}
+      </a>
+    }
+  </nav>
+}

@@ -1,0 +1,58 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// Layout grid — the design's implicit page frame, formalised as mixins.
+// spec: specs/grid.md (usage, breakpoints, landmines G1–G3)
+//
+// 3-column wrapper:
+//   [full-start] gutter [content-start] ≤1400px [content-end] gutter [full-end]
+//
+// The fluid gutter (clamp) + minmax already handle every breakpoint — no media
+// queries needed here. There is deliberately NO shared 12-column inner grid:
+// the design's sections align to the content edges only; their inner layouts
+// (1.5fr/.9fr splits, auto-fit metas, masonry) stay section-specific — see the
+// per-view specs.
+//
+// Usage (root-class convention): the component's root element takes
+// `@include grid.wrapper;`. Direct children land in the content column by
+// default; opt out per child with full-block / overlap-*-block. A full-block
+// child that needs aligned content inside applies wrapper again itself.
+//
+//   @use '../../../styles/grid';           // from src/app/components/<x>/
+//   .footer { @include grid.wrapper; }
+//   .footer__marquee { @include grid.full-block; }
+//
+// ⚠ Component hosts are unknown elements → display: inline by UA default.
+// When the wrapper sits on a page and a child is a component (<app-footer>),
+// the HOST is the grid item — it needs display: block (e.g. `host: { style:
+// 'display: block' }` or :host in its styles), and full-block etc. must target
+// the host, not the root div inside it.
+// ─────────────────────────────────────────────────────────────────────────────
+
+@use 'tokens';
+
+@mixin wrapper() {
+  display: grid;
+  grid-template-columns:
+    [full-start] minmax(#{tokens.$gutter}, 1fr)
+    [content-start] minmax(0, tokens.$max-width)
+    [content-end] minmax(#{tokens.$gutter}, 1fr)
+    [full-end];
+  width: 100%;
+
+  > * {
+    grid-column: content-start / content-end;
+  }
+}
+
+// Placement overrides for wrapper children ───────────────────────────────────
+
+@mixin full-block() {
+  grid-column: full-start / full-end;
+}
+
+@mixin overlap-left-block() {
+  grid-column: full-start / content-end;
+}
+
+@mixin overlap-right-block() {
+  grid-column: content-start / full-end;
+}

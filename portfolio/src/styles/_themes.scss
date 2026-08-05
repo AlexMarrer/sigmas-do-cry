@@ -5,7 +5,7 @@
 // page. Instead of per-component dark overrides (or ::ng-deep — never), a
 // section opts into the dark palette with ONE class; every descendant that
 // styles itself with var(--bg)/var(--ink)/var(--hairline) follows along
-// automatically. :root (in _tokens.scss) IS the light theme.
+// automatically. :root (emitted in styles.scss) IS the light theme.
 //
 // Usage:  <section class="theme-dark">…</section>
 // ─────────────────────────────────────────────────────────────────────────────

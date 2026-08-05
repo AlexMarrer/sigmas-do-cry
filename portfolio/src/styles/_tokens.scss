@@ -3,8 +3,12 @@
 // design_handoff_portfolio/README.md (§ Design Tokens). Two layers:
 //
 //   1. SCSS variables  → for build-time use (media queries, mixins, math).
-//   2. CSS custom props (:root, below) → for runtime use in component styles
-//      and for the light/dark section theming (_themes.scss flips them).
+//   2. CSS custom props (:root) → for runtime use in component styles and for
+//      the light/dark section theming (_themes.scss flips them). The :root
+//      block is emitted in styles.scss, NOT here: component styles @use this
+//      file (via _grid.scss etc.) as a separate Sass compilation each, so any
+//      CSS output here would be duplicated into every component stylesheet.
+//      This file must stay output-free — variables and mixins only.
 //
 // Component styles should reach for var(--…) first; SCSS vars are for the
 // things custom props can't do (breakpoints in @media, mixin params).
@@ -68,20 +72,3 @@ $ease-reveal: cubic-bezier(0.2, 0.65, 0.3, 1); // entrances, scroll reveals
 $ease-hover: cubic-bezier(0.2, 0.8, 0.2, 1); // magnetic spring, hover scale
 $ease-expand: cubic-bezier(0.3, 0.9, 0.25, 1); // row expand/collapse
 $marquee-duration: 26s; // tweakable 10–60s
-
-// ── Runtime layer ────────────────────────────────────────────────────────────
-:root {
-  --bg: #{$bg-light};
-  --ink: #{$ink};
-  --accent: #{$accent};
-  --accent-text: #{$accent-text-on-light};
-  --accent-contrast: #ffffff;
-  --hairline: #{$hairline-on-light};
-  --hairline-strong: #{$hairline-on-light-strong};
-  --font-sans: #{$font-sans};
-  --gutter: #{$gutter};
-  --section-pad: #{$section-pad};
-  --section-pad-tall: #{$section-pad-tall};
-  --max-width: #{$max-width};
-  --marquee-duration: #{$marquee-duration};
-}

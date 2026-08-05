@@ -71,4 +71,15 @@ h3 {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+
+  // The `*` selector above does NOT reach view-transition pseudo-elements, so
+  // the router's nav-dot morph (styles.scss) is killed explicitly here. They
+  // originate on :root, so they nest under it.
+  :root {
+    &::view-transition-group(*),
+    &::view-transition-old(*),
+    &::view-transition-new(*) {
+      animation: none !important;
+    }
+  }
 }

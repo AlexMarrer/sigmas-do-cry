@@ -6,7 +6,7 @@ Definition of done per item: matches the screenshot/prototype visually, works ke
 
 ## 0 · Toolchain & skeleton — DONE (scaffolded)
 
-- [x] Analog + Angular 22, zoneless, file router (+ input binding, scroll restore), hydration + event replay
+- [x] Analog + Angular 22, zoneless, file router (+ input binding, scroll restore, view transitions), hydration + event replay
 - [x] Prerender enumerates 4 static routes + 9 slugs from `data/projects.ts` (verified: 13 pages)
 - [x] Typed data files seeded from prototype (`data/projects|trips|skills.ts`)
 - [x] Token layer (`_tokens/_themes/_fonts/_reset`), self-hosted variable font + preload
@@ -16,10 +16,11 @@ Definition of done per item: matches the screenshot/prototype visually, works ke
 ## 1 · Foundation polish
 
 - [x] Accent-contrast strategy (⚠ E4) — DECIDED: two-tier accent. `--accent` (#C6402E) for fills/large text only; `--accent-text` (#B23A29 on light, #E05A44 in `.theme-dark`) for all accent text < ~19px. Tokens are in place — the per-component wiring is called out in each spec.
+- [x] Grid system → [grid.md](grid.md) — 3-column frame (`grid.wrapper` + placement mixins, ⚠ G1), breakpoints + `down()`, output-free token rule (⚠ G2). Adopt per section as views get built.
 
 ## 2 · Shell components (everything depends on these visually)
 
-- [ ] Nav → [01-nav.md](01-nav.md) — blend-mode inversion (⚠ D1), active dot, responsive pills
+- [x] Nav → [01-nav.md](01-nav.md) — blend-mode inversion (⚠ D1), active dot morphing between pills on route change (⚠ D7), responsive pills
 - [ ] Footer, static part → [07-footer.md](07-footer.md) — CTA circle (⚠ D3 later), pills, bottom bar (clock placeholder for now)
 
 ## 3 · Views, static (no JS effects yet — build all five before any effect)
@@ -81,9 +82,14 @@ Definition of done per item: matches the screenshot/prototype visually, works ke
 | D1 | `mix-blend-mode` dies in stacking contexts | 01-nav.md |
 | D2 | Row expand: `grid-template-rows 0fr↔1fr`, not max-height | 03-work.md |
 | D3 | Magnetic writes `--mx/--my`, never `style.transform` | magnetic.md, 07-footer.md |
-| D4 | Sass `@use` only; tokens once; no `::ng-deep` | styles/ |
+| D4 | Sass `@use` only; tokens once; no `::ng-deep` | styles/, grid.md |
+| D8 | Nav mobile sheet stays a SIBLING of `.nav` (blend context) | 01-nav.md |
+| G1 | Component host is the grid item → host needs `display: block` | grid.md |
+| G2 | `_tokens`/`_grid` must stay output-free (no CSS emission) | grid.md |
+| G3 | Declarations before nested `@include down(…)` (Sass mixed-decls) | grid.md |
 | D5 | Weight 550 needs the variable font | _fonts.scss |
 | D6 | CSS-columns masonry: DOM order + reserved aspect boxes | 06-gallery.md |
+| D7 | Nav dot view-transition morph: unique name on active dot only, blend re-applied in the overlay, reduced-motion killed globally | 01-nav.md |
 | E1 | Hover-only affordances need focus/touch equivalents | 03-work.md, 06-gallery.md |
 | E2 | Lightbox a11y → CDK Overlay + FocusTrap + LiveAnnouncer | lightbox.md |
 | E3 | One motion gate: CSS media block + MotionService | _reset.scss, motion.service.ts |

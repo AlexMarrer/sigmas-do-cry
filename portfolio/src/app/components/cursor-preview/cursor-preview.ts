@@ -8,6 +8,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 @Component({
   selector: 'app-cursor-preview',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `<!-- TODO(spec: specs/cursor-preview.md) -->`,
+  templateUrl: './cursor-preview.html',
+  styleUrls: ['./cursor-preview.scss'],
 })
 export class CursorPreview {}

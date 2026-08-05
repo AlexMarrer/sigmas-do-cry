@@ -13,6 +13,9 @@ export const routeMeta: RouteMeta = {
 @Component({
   selector: 'app-work-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  // TEMP: clears the fixed nav until the real section carries its own
+  // padding-top (spec: clamp(140px,18vw,220px)). Remove then — don't stack.
+  styles: `:host { display: block; padding-top: clamp(140px, 18vw, 220px); }`,
   template: `<h1>Work — TODO(spec: specs/03-work.md)</h1>`,
 })
 export default class WorkPage {}

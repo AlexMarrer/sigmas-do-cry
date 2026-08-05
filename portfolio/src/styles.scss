@@ -4,6 +4,25 @@
 @use 'styles/reset';
 @use 'styles/themes';
 
+// Design-token runtime layer — :root IS the light theme (_themes.scss flips it
+// per section). Emitted here and only here: _tokens.scss must stay output-free
+// because component styles @use it (via _grid.scss) as separate compilations.
+:root {
+  --bg: #{tokens.$bg-light};
+  --ink: #{tokens.$ink};
+  --accent: #{tokens.$accent};
+  --accent-text: #{tokens.$accent-text-on-light};
+  --accent-contrast: #ffffff;
+  --hairline: #{tokens.$hairline-on-light};
+  --hairline-strong: #{tokens.$hairline-on-light-strong};
+  --font-sans: #{tokens.$font-sans};
+  --gutter: #{tokens.$gutter};
+  --section-pad: #{tokens.$section-pad};
+  --section-pad-tall: #{tokens.$section-pad-tall};
+  --max-width: #{tokens.$max-width};
+  --marquee-duration: #{tokens.$marquee-duration};
+}
+
 html {
   background: var(--bg);
 }
@@ -14,6 +33,36 @@ body {
   line-height: tokens.$lh-body;
   background: var(--bg);
   color: var(--ink);
+}
+
+// Router view transitions. We deliberately morph ONLY the nav's active-route
+// dot between pills — the default full-page root cross-fade is switched off so
+// navigations stay instant and the hero's own entrance animation owns the frame.
+// (reduced-motion kill lives in the E3 block in _reset.scss.)
+// The ::view-transition-* pseudos originate on :root, so they nest under it.
+:root {
+  &::view-transition-old(root),
+  &::view-transition-new(root) {
+    animation: none;
+  }
+
+  // The group wrapper interpolates position/size — that's the actual slide.
+  // The snapshot is lifted into the ::view-transition overlay, OUTSIDE the nav's
+  // :host blend context, so the white dot would flash pure white mid-morph.
+  // Re-applying the same blend here composites it against the page snapshot
+  // below it in the overlay, so it stays inverted (dark on light, white on
+  // dark) — same look as the resting dot.
+  &::view-transition-group(nav-dot) {
+    animation-duration: 0.35s;
+    animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+    mix-blend-mode: difference;
+  }
+}
+
+// Scroll lock while the mobile nav sheet is open — SiteNav toggles this on
+// <body> (component styles can't reach body, so it lives in the global layer).
+.u-no-scroll {
+  overflow: hidden;
 }
 
 // Semantic-heading helper: the hero's real <h1> is visually the marquee, so the

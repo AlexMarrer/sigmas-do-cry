@@ -9,7 +9,8 @@ import type { Project } from '../../data/types';
 @Component({
   selector: 'app-project-rows',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `<!-- TODO(spec: specs/03-work.md) -->`,
+  templateUrl: './project-rows.html',
+  styleUrls: ['./project-rows.scss'],
 })
 export class ProjectRows {
   readonly projects = input.required<Project[]>();

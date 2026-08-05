@@ -6,6 +6,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 @Component({
   selector: 'app-circle-badge',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `<!-- TODO(spec: specs/02-home.md) -->`,
+  templateUrl: './circle-badge.html',
+  styleUrls: ['./circle-badge.scss'],
 })
 export class CircleBadge {}
