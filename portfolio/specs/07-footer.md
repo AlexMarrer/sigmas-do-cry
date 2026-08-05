@@ -6,6 +6,8 @@
 
 `<footer class="theme-dark">`, padding `clamp(90px,12vw,160px) var(--gutter) 30px`, inner max-width 1400 centered.
 
+> Deviation 2026-08-05: the footer's content is **inset** relative to the nav / page content — `.footer__inner` adds `padding-inline` 5rem (>922px) → 3rem (≤922) → 1.5rem (≤768) → 1rem (≤360), on top of the grid frame's gutter. It must live on an inner box inside the content column: as padding on the grid root it would only eat into the fluid gutters and disappear once the 1400px column caps out (≥1544px), leaving the footer flush with the nav again.
+
 1. **Intro row** (`appScrollReveal`): round portrait `rice.jpg` 52×52, `border-radius: 50%`, `object-position: 58% 12%` + label "GOT A PROJECT IN MIND?" 13px/.14em/up/w600/op .6, gap 20px.
 2. **Headline**: "Let's build something together", `clamp(46px, 7.5vw, 116px)`, w550, ls −0.035em, lh 1.02, `max-width: 12em`, margin-top 26px. (It's an `<h2>` — the page's `h1` belongs to the routed view.)
 3. **Hairline + CTA circle**: wrapper `position: relative`, margin-top `clamp(56px,8vw,100px)`; hairline `border-top: 1px rgba(239,236,231,.22)`; `<a href="mailto:…">` circle: absolute, `right: clamp(8px, 8vw, 120px); top: 0; transform: translateY(-50%)`, width `clamp(122px, 12vw, 164px)`, `aspect-ratio: 1`, radius 50%, accent bg, white, 16px w600, centered text "Get in touch"; hover inverts (light bg, ink text, .35s). `[appMagnetic]`.

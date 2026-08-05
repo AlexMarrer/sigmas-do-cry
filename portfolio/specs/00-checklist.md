@@ -21,7 +21,7 @@ Definition of done per item: matches the screenshot/prototype visually, works ke
 ## 2 · Shell components (everything depends on these visually)
 
 - [x] Nav → [01-nav.md](01-nav.md) — blend-mode inversion (⚠ D1), active dot morphing between pills on route change (⚠ D7), responsive pills
-- [ ] Footer, static part → [07-footer.md](07-footer.md) — CTA circle (⚠ D3 later), pills, bottom bar (clock placeholder for now)
+- [x] Footer, static part → [07-footer.md](07-footer.md) — CTA circle (⚠ D3 later), pills, bottom bar (clock placeholder for now). Ships `images/rice-small.jpg` (240×160, 8 KB downscale of rice.jpg) for the 52px portrait.
 
 ## 3 · Views, static (no JS effects yet — build all five before any effect)
 
@@ -37,12 +37,12 @@ Definition of done per item: matches the screenshot/prototype visually, works ke
 
 ## 4 · Motion & interaction layer (order matters: service → simple → complex)
 
-- [ ] MotionService — SSR-safe `reducedMotion` / `finePointer` (⚠ A1, E3); everything below consumes it
+- [x] MotionService — SSR-safe `reducedMotion` / `finePointer` (⚠ A1, E3); everything below consumes it (pulled ahead 2026-08-05 for the footer's magnetic CTA)
 - [ ] Scroll-reveal directive → [scroll-reveal.md](scroll-reveal.md) (⚠ A3) — then sprinkle `appScrollReveal` per the view specs
-- [ ] Magnetic directive → [magnetic.md](magnetic.md) (⚠ D3, B2) — hero pill, About pill, all-work pill, CV/gallery buttons, footer CTA + email pill, circle badge
+- [x] Magnetic directive → [magnetic.md](magnetic.md) (⚠ D3, B2) — DONE, wired: footer CTA + email pill. Still to wire as their views get built: hero pill, About pill, all-work pill, CV/gallery buttons, circle badge
 - [ ] Row expand animation → [03-work.md](03-work.md) § Hover behavior (⚠ D2, E1) — depends on ProjectHoverService wiring
 - [ ] Cursor-preview card → [cursor-preview.md](cursor-preview.md) (⚠ B1, B3) — depends on ProjectHoverService wiring
-- [ ] Clock → [clock.md](clock.md) (⚠ A2) — independent, do anytime
+- [x] Clock → [clock.md](clock.md) (⚠ A2) — independent, do anytime (done 2026-08-05 with the footer)
 - [ ] Lightbox → [lightbox.md](lightbox.md) (⚠ E2) — depends on gallery tiles; `@defer` + CDK
 
 ## 5 · Cross-cutting passes (after everything works)

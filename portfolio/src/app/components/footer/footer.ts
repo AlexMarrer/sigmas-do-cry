@@ -1,11 +1,15 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from "@angular/core";
+import { LocalClock } from "../local-clock/local-clock";
+import { Magnetic } from "../../directives/magnetic";
 
-// TODO(spec: specs/07-footer.md)
-// Dark footer on every page: CTA circle on the hairline, pills, bottom bar
-// with <app-local-clock>.
+// spec: specs/07-footer.md — CTA circle + email pill are magnetic (⚠ D3: the
+// directive writes --mx/--my, the styles compose them into the transform);
+// bottom bar hosts the live <app-local-clock> (⚠ A2).
 @Component({
-  selector: 'app-footer',
+  selector: "app-footer",
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `<!-- TODO(spec: specs/07-footer.md) -->`,
+  imports: [LocalClock, Magnetic],
+  templateUrl: "./footer.html",
+  styleUrls: ["./footer.scss"],
 })
 export class SiteFooter {}

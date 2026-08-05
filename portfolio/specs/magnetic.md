@@ -2,6 +2,8 @@
 
 **Purpose.** Pills/circles lean toward the cursor and spring back. README § Interactions: translate toward cursor ×.25 (x) / ×.35 (y), spring back via transition .35s. Attribute directive `[appMagnetic]`.
 
+> Deviation 2026-08-05: strength bumped to **×.35 (x) / ×.5 (y)** — the prototype's pull felt too weak. The README numbers above are the original reference.
+
 Used on: hero "Based in Switzerland" pill, circle badge, intro "About me" pill, "All work 9" pill, About's two buttons, footer CTA circle + email pill.
 
 ## Behavior

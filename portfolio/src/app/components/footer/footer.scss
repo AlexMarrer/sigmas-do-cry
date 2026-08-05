@@ -1,0 +1,190 @@
+// spec: specs/07-footer.md — block = .footer (root-class wrapper convention)
+@use '../../../styles/grid';
+@use '../../../styles/tokens';
+
+// Grid frame supplies the horizontal gutters + 1400px content column, so the
+// section only pads vertically. No media queries anywhere in here — every
+// dimension the design scales is a clamp(), the bars wrap via flex-wrap.
+.footer {
+  @include grid.wrapper;
+  padding-block: clamp(90px, 12vw, 160px) 30px;
+}
+
+// The design insets the footer relative to the nav / page content. This sits
+// INSIDE the content column (not as padding on the grid root), so the inset
+// survives on ultrawide screens where the column caps at 1400px — otherwise it
+// would just be swallowed by the fluid gutters and the footer would end up
+// flush with the nav again. Stepped instead of clamped so ≥922px is exactly
+// the 5rem the design calls for (⚠ G3: declarations before the down() blocks).
+.footer__inner {
+  padding-inline: 5rem;
+
+  @include tokens.down(tokens.$bp-md) {
+    padding-inline: 3rem;
+  }
+
+  @include tokens.down(tokens.$bp-sm) {
+    padding-inline: 1.5rem;
+  }
+
+  @include tokens.down(tokens.$bp-xs) {
+    padding-inline: 1rem;
+  }
+}
+
+.footer__intro {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.footer__portrait {
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: 58% 12%;
+}
+
+.footer__label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+
+.footer__headline {
+  margin-top: 1.625rem;
+  font-size: clamp(46px, 7.5vw, 116px);
+  font-weight: 550; // D5 — needs the variable font
+  letter-spacing: tokens.$ls-display;
+  line-height: 1.02;
+  max-width: 12em;
+}
+
+// The hairline the CTA circle sits on. Its .22 alpha is bespoke to this
+// always-dark section (between --hairline .16 and -strong .3), so it's a
+// literal instead of a theme var.
+.footer__cta-line {
+  position: relative;
+  margin-top: clamp(56px, 8vw, 100px);
+  border-top: 1px solid rgba(239, 236, 231, 0.22);
+}
+
+.footer__cta {
+  position: absolute;
+  top: 0;
+  right: clamp(8px, 8vw, 120px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(122px, 12vw, 164px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--accent-contrast);
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+  // ⚠ D3 — THE magnetic trap: the resting offset and the magnetic offset must
+  // compose in this ONE transform. The directive (phase 4) writes --mx/--my
+  // custom props only — assigning style.transform would teleport the circle
+  // onto the line.
+  transform: translateY(-50%) translate(var(--mx, 0px), var(--my, 0px));
+  transition:
+    background 0.35s,
+    color 0.35s,
+    transform 0.35s tokens.$ease-hover;
+
+  &:hover,
+  &:focus-visible {
+    // Flipped theme vars: light disc, ink text on the dark footer.
+    background: var(--ink);
+    color: var(--bg);
+  }
+}
+
+.footer__pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.875rem;
+  margin-top: clamp(56px, 8vw, 96px);
+}
+
+.footer__pill {
+  padding: 1rem 1.75rem;
+  border-radius: tokens.$r-pill;
+  font-size: 1rem;
+}
+
+.footer__pill--mail {
+  border: 1px solid var(--hairline-strong);
+  font-weight: 550;
+  // Magnetic host: the directive writes --mx/--my, this transform composes
+  // them (D3); the transition is the spring-back.
+  transform: translate(var(--mx, 0px), var(--my, 0px));
+  transition:
+    background 0.3s,
+    color 0.3s,
+    transform 0.35s tokens.$ease-hover;
+
+  &:hover,
+  &:focus-visible {
+    background: var(--ink);
+    color: var(--bg);
+  }
+}
+
+.footer__pill--muted {
+  border: 1px solid var(--hairline);
+  font-weight: 500;
+  opacity: 0.7;
+}
+
+.footer__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.625rem;
+  margin-top: clamp(70px, 9vw, 110px);
+  border-top: 1px solid rgba(239, 236, 231, 0.14); // bespoke alpha, see above
+  padding-top: 1.625rem;
+}
+
+.footer__micro {
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.4;
+}
+
+.footer__value {
+  margin-top: 0.4375rem;
+  font-size: 0.875rem;
+  opacity: 0.85;
+}
+
+.footer__value--clock {
+  font-variant-numeric: tabular-nums;
+}
+
+.footer__links {
+  display: flex;
+  gap: 1.375rem;
+}
+
+.footer__link {
+  font-size: 0.875rem;
+  opacity: 0.85;
+  transition: color 0.25s;
+
+  &:hover,
+  &:focus-visible {
+    // E4 — small text on dark: plain --accent is only 3.53:1 here; .theme-dark
+    // already swapped --accent-text to the brighter red.
+    color: var(--accent-text);
+  }
+}

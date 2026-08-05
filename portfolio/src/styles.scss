@@ -35,6 +35,21 @@ body {
   color: var(--ink);
 }
 
+// Sticky footer: the shell fills the viewport, <main> absorbs the slack so
+// <app-footer> lands at the bottom even on short pages. ⚠ D1: keep this
+// container free of transform/filter/opacity — a stacking context here kills
+// the nav's mix-blend-mode inversion (flex itself is safe).
+app-root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; // fallback
+  min-height: 100dvh;
+
+  > main {
+    flex: 1;
+  }
+}
+
 // Router view transitions. We deliberately morph ONLY the nav's active-route
 // dot between pills — the default full-page root cross-fade is switched off so
 // navigations stay instant and the hero's own entrance animation owns the frame.

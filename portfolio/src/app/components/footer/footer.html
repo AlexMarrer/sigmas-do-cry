@@ -1,0 +1,63 @@
+<!-- spec: specs/07-footer.md — always-dark closing section; .theme-dark flips
+     the palette vars, everything below styles itself with var(--ink) etc. -->
+<footer class="footer theme-dark">
+  <!-- Inner box carries the design's extra inset: the footer's content sits
+       further in than the nav / page content at EVERY width (padding on the
+       grid root itself would only eat into the fluid gutters and vanish once
+       the 1400px content column caps out). -->
+  <div class="footer__inner">
+    <div class="footer__intro">
+      <img
+        class="footer__portrait"
+        src="/images/rice-small.jpg"
+        alt="Portrait of Alex Uscata"
+        width="52"
+        height="52"
+      />
+      <span class="footer__label">Got a project in mind?</span>
+    </div>
+
+    <h2 class="footer__headline">Let's build something together</h2>
+
+    <div class="footer__cta-line">
+      <a class="footer__cta" href="mailto:alex@uscata.com" appMagnetic
+        >Get in touch</a
+      >
+    </div>
+
+    <div class="footer__pills">
+      <a class="footer__pill footer__pill--mail" href="mailto:alex@uscata.com" appMagnetic
+        >alex&#64;uscata.com</a
+      >
+      <span class="footer__pill footer__pill--muted">Basel, Switzerland</span>
+    </div>
+
+    <div class="footer__bar">
+      <div>
+        <div class="footer__micro">Version</div>
+        <div class="footer__value">© 2026 Alex Uscata</div>
+      </div>
+      <div>
+        <div class="footer__micro">Local time</div>
+        <div class="footer__value footer__value--clock"><app-local-clock /></div>
+      </div>
+      <div class="footer__links">
+        <a
+          class="footer__link"
+          href="https://github.com/AlexMarrer"
+          target="_blank"
+          rel="noopener"
+          >GitHub</a
+        >
+        <a
+          class="footer__link"
+          href="https://www.linkedin.com/in/alex-uscata/"
+          target="_blank"
+          rel="noopener"
+          >LinkedIn</a
+        >
+        <a class="footer__link" href="mailto:alex@uscata.com">Email</a>
+      </div>
+    </div>
+  </div>
+</footer>
