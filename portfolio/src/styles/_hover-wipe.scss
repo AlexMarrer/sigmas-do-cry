@@ -1,0 +1,99 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// spec: specs/hover-wipe.md — directional hover fill. The `::before` disc grows
+// out of the point the cursor entered ([appHoverWipe] writes --hx/--hy/--hd) and
+// collapses toward the point it left.
+//
+// Output-free, mixins only — same rule as _tokens.scss: component styles @use
+// this as a separate Sass compilation each, so any CSS emitted here would be
+// duplicated into every one of them.
+// ─────────────────────────────────────────────────────────────────────────────
+
+// $fill — the colour the host wears while hovered (its old `:hover` background).
+//
+// ⚠ The host must already be positioned — this mixin deliberately does NOT set
+// `position`, because .footer__cta is `absolute` and a `relative` here would rip
+// it off its hairline.
+// ⚠ The host's `:hover` must NOT set `background` any more: the base colour
+// would flip instantly and the fill would then grow in its own colour, i.e.
+// invisibly. Keep `color` / `border-color` there, drop the background.
+// $duration / $easing are the two feel knobs. ⚠ NOT tokens.$ease-hover: that
+// curve front-loads almost everything into the first third, which on top of a
+// circle's own r² coverage reads as the fill snapping in and then stalling.
+// This one starts gently and decelerates.
+// $pressed-shadow — the host's `:active` inner shadow, or `null` for hosts that
+// don't have one. ⚠ It can't stay on the host (the negative-z disc paints over
+// it) and it can't ride the disc (once filled, the disc's edge is outside the
+// host, so an inset shadow traces a rim you can't see) — hence its own layer.
+@mixin wipe(
+  $fill,
+  $duration: 0.55s,
+  $easing: cubic-bezier(0.4, 0, 0.2, 1),
+  $pressed-shadow: null
+) {
+  // ⚠ Without a stacking context the z-index:-1 layer sinks BEHIND the host's
+  // own background and nothing is visible. The magnetic hosts get one for free
+  // from their transform — this makes it independent of that.
+  isolation: isolate;
+  // The disc is deliberately larger than the host; this is what trims it back
+  // to the pill/circle silhouette. (An element's own outline is not clipped by
+  // its own overflow, so :focus-visible survives.)
+  overflow: hidden;
+
+  // ⚠ THE ordering trap — why the origin is left/top and NOT part of the
+  // animated property. [appHoverWipe] has to call getBoundingClientRect() to
+  // place the disc, and that forces a synchronous style flush *while :hover is
+  // already matching but --hx/--hy still hold the previous entry point*. So the
+  // transition always kicks off aimed at the OLD origin, and only then does the
+  // directive write the new one. With the origin baked into an interpolated
+  // clip-path that stale point visibly animates — enter left, leave, re-enter
+  // right and the fill still opens from the left. Here the origin is an
+  // untransitioned left/top: it snaps to the new point while scale is still ~0,
+  // i.e. invisibly, and only scale animates.
+  &::before {
+    content: "";
+    position: absolute;
+    left: var(--hx, 50%);
+    top: var(--hy, 50%);
+    // --hd is the exact diameter needed to reach the farthest corner, so
+    // coverage completes as the transition ends (see hover-wipe.ts). The 300%
+    // fallback (no JS / no fine pointer) just has to overshoot from the centre.
+    // ⚠ aspect-ratio, not `height: var(--hd)`: percentage heights resolve
+    // against the host's height, which on a wide pill gives an ellipse.
+    width: var(--hd, 300%);
+    aspect-ratio: 1;
+    z-index: -1;
+    background: $fill;
+    border-radius: 50%;
+    // translate(-50%) is relative to the disc's OWN box — that's what centres
+    // it on the origin without any margin math.
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform $duration $easing;
+  }
+
+  // :focus-visible fills too, so keyboard users get the same end state — the
+  // host's hover rule must therefore flip `color` on :focus-visible as well, or
+  // the label ends up same-on-same.
+  &:hover::before,
+  &:focus-visible::before {
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  @if $pressed-shadow {
+    // Same z-index as the disc, later in DOM order → paints on top of it.
+    &::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      border-radius: inherit;
+      box-shadow: $pressed-shadow;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.12s;
+    }
+
+    &:active::after {
+      opacity: 1;
+    }
+  }
+}
