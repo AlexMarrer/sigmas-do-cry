@@ -119,6 +119,17 @@ flips it per section.
 - **G2 — keep `_tokens.scss` / `_grid.scss` output-free** (see above). If a
   component ships `:root[_ngcontent-…]` rules, someone re-added CSS output to a
   shared partial.
+- **G4 — placement mixins must out-specify `wrapper`'s default.** Emulated
+  encapsulation appends the scope attribute to every compound, so
+  `.hero[_ngcontent] > [_ngcontent]` (0,3,0) beats `.hero__marquee[_ngcontent]`
+  (0,2,0) — a plain `grid-column` override silently loses and the child stays
+  boxed in the content column. The mixins therefore emit a **doubled class**
+  (`&#{&}` → `.x.x`, 0,3,0) and rely on source order (placement is always
+  written after the root's `@include grid.wrapper`). Symptom when it regresses:
+  a `full-block` child clips at the content edges instead of bleeding.
+- **A full-bleed child pads itself.** Once `full-block` really applies, the grid
+  gutters no longer protect its content — add `padding-inline: var(--gutter)`
+  (see `.hero__bar`) or it sits flush against the viewport edge.
 - **G3 — Sass mixed-decls:** inside a rule, put all declarations *before* any
   `@include tokens.down(…)` block. Declarations after a nested rule are
   deprecated in Dart Sass and will start warning.

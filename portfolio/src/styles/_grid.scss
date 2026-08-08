@@ -46,15 +46,30 @@
 }
 
 // Placement overrides for wrapper children ───────────────────────────────────
+//
+// ⚠ G4 — why the doubled selector: Angular's emulated encapsulation appends the
+// scope attribute to EVERY compound, so `wrapper`'s default
+//   .hero[_ngcontent] > [_ngcontent]        → (0,3,0)
+// out-specifies a plain child class
+//   .hero__marquee[_ngcontent]              → (0,2,0)
+// and the override loses no matter the order. `&#{&}` doubles the class to
+// (0,3,0); source order then decides, and placement is always written after
+// the `@include grid.wrapper` on the root. Emits `.x.x { … }` — harmless.
 
 @mixin full-block() {
-  grid-column: full-start / full-end;
+  &#{&} {
+    grid-column: full-start / full-end;
+  }
 }
 
 @mixin overlap-left-block() {
-  grid-column: full-start / content-end;
+  &#{&} {
+    grid-column: full-start / content-end;
+  }
 }
 
 @mixin overlap-right-block() {
-  grid-column: content-start / full-end;
+  &#{&} {
+    grid-column: content-start / full-end;
+  }
 }
