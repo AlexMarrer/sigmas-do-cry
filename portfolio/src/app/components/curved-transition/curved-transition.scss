@@ -1,0 +1,105 @@
+// Generic seam between two sections: the previous section's colour bulges into
+// the next one as a wide, symmetric ellipse and flattens with scroll progress.
+//
+// The seam OVERLAPS the next section — it consumes no flow space of its own, so
+// nothing gets pushed down and no dead band is left behind once the curve has
+// flattened. Only the bulging side is painted; the other section shows through.
+//
+// Knows nothing about work/footer — pick a strength via the `strength` input,
+// or set the colour per instance from the consumer (custom props inherit in):
+//
+//   app-curved-transition.about__seam { --transition-from: #{tokens.$ink}; }
+//
+@use "../../../styles/tokens";
+
+// ⚠ G1: component hosts are inline by UA default — an inline host around the
+// block below adds a baseline strut, i.e. a few px of layout shift at the seam.
+:host {
+  display: block;
+}
+
+.curved-transition {
+  // Resolve the overridable knob ONCE: the height and the negative margin that
+  // cancels it must never drift apart, or the seam starts eating layout again.
+  // ⚠ Defaults belong in this var() FALLBACK, never as a --transition-height
+  // declaration: a declaration here wins over the inherited value and would
+  // silently swallow every override a consumer sets on the host element.
+  --_h: var(--transition-height, clamp(7.5rem, 15vw, 17rem));
+
+  position: relative;
+  // Paint over the following section. Stays far below the nav's z-index 60.
+  z-index: 1;
+  height: var(--_h);
+  // ⚠ THE point of the component: net flow height is zero. The seam hangs over
+  // the next section instead of pushing it down — without this you get a band
+  // of dead colour that survives after the curve has scrubbed away.
+  margin-block-end: calc(-1 * var(--_h));
+  // ⚠ Mandatory: --transition-spread makes the child wider than the viewport.
+  // Without clipping you get a horizontal scrollbar on every page using this.
+  overflow: clip;
+  // It lies ON TOP of the next section — never swallow its clicks.
+  pointer-events: none;
+}
+
+.curved-transition__curve {
+  position: absolute;
+  inset-block-start: 0;
+  left: 50%;
+  // The curve is deliberately WIDER than the viewport so the ellipse reads as an
+  // arc instead of a dome. The visible bow is height × (1 − √(1 − (1/spread)²)),
+  // so SMALLER spread = stronger curve: 135% ≈ 0.33, 150% ≈ 0.26, 260% ≈ 0.08.
+  // ⚠ Never go below ~105%: at 100% the ellipse hits zero exactly at the screen
+  // edges and the next section meets the previous one in a hard corner.
+  width: var(--transition-spread, 135%);
+  height: 100%;
+  background: var(--transition-from, #{tokens.$bg-light});
+  // Only the bottom corners: the top edge stays a flat full-bleed line so it
+  // butts seamlessly against the section above at every scroll position.
+  border-radius: 0 0 50% 50% / 0 0 100% 100%;
+  // ⚠ The origin MUST be the flat edge. Any other origin drags the seam down
+  // during the scale and opens a gap against the previous section.
+  transform-origin: top center;
+  // scaleY also scales the percentage border-radius — that IS the effect: the
+  // ellipse flattens proportionally instead of squashing into a wedge.
+  // --curve-p defaults to 0 so SSR/prerender ships the full bulge, no flash.
+  transform: translateX(-50%) scaleY(calc(1 - var(--curve-p, 0)));
+  will-change: transform;
+}
+
+// Strength presets. These DO declare on the block (unlike the default above),
+// so an explicit modifier deliberately outranks an ambient host override —
+// pick one or the other for height/spread, not both.
+//
+// ⚠ Keep the height at or below the next section's top padding: the curve hangs
+// into it, and anything taller reaches the section's first content at full
+// bulge. The scroll timing normally hides this (the curve is flat by the time
+// that content is on screen) — but a deep link landing mid-seam would show it.
+.curved-transition--subtle {
+  --transition-height: clamp(4rem, 7vw, 8.75rem);
+  --transition-spread: 260%;
+}
+
+.curved-transition--bold {
+  --transition-height: clamp(8.75rem, 18vw, 20rem);
+  --transition-spread: 122%;
+}
+
+.curved-transition--dome {
+  --transition-height: clamp(11rem, 26vw, 28rem);
+  --transition-spread: 108%;
+}
+
+// Mirrored seam: the NEXT section bulges up into the previous one, so the
+// overlap flips to the other side and the painted colour swaps with it.
+.curved-transition--reverse {
+  margin-block-start: calc(-1 * var(--_h));
+  margin-block-end: 0;
+
+  .curved-transition__curve {
+    inset-block-start: auto;
+    inset-block-end: 0;
+    background: var(--transition-to, #{tokens.$ink});
+    border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+    transform-origin: bottom center;
+  }
+}

@@ -1,0 +1,13 @@
+<!-- Purely decorative seam between two sections — never announced. The strength
+     modifier has to be bound here: a class the consumer puts on the host would
+     carry the PARENT's encapsulation attribute and never match this block. -->
+<div
+  class="curved-transition"
+  [class.curved-transition--subtle]="strength() === 'subtle'"
+  [class.curved-transition--bold]="strength() === 'bold'"
+  [class.curved-transition--dome]="strength() === 'dome'"
+  [class.curved-transition--reverse]="reverse()"
+  aria-hidden="true"
+>
+  <div class="curved-transition__curve"></div>
+</div>
