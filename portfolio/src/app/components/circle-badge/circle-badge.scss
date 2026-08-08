@@ -1,3 +1,44 @@
-// spec: specs/02-home.md § Circle badge
+// spec: specs/02-home.md § Section 2 (circle badge)
+// ⚠ G1: sizing (128px …) comes from the page that places the badge; the block
+// just fills the host.
+:host {
+  display: block;
+}
+
 .circle-badge {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--accent-contrast);
+
+  &__ring {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    // ⚠ E3: pure CSS spin — killed globally in _reset.scss, don't re-gate.
+    animation: circle-badge-spin 18s linear infinite;
+  }
+
+  &__text {
+    font-size: 0.5375rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    fill: currentColor;
+  }
+
+  &__arrow {
+    font-size: 1.375rem;
+  }
+}
+
+@keyframes circle-badge-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }

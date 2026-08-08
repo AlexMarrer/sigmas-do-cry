@@ -1,8 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
-// TODO(spec: specs/02-home.md § Circle badge)
-// 128px accent circle, rotating SVG textPath ("ALEX USCATA — SOFTWARE
-// DEVELOPER —", 18s), ↓ centered. Straddles the light/dark boundary.
+// spec: specs/02-home.md § Section 2 (circle badge)
 @Component({
   selector: 'app-circle-badge',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -1,3 +1,13 @@
-<!-- TODO(spec: specs/02-home.md § Circle badge) -->
-<div class="circle-badge">
+<!-- Decorative — the name is already the page's h1. -->
+<div class="circle-badge" aria-hidden="true">
+  <svg class="circle-badge__ring" viewBox="0 0 100 100">
+    <defs>
+      <!-- ⚠ id must stay unique per page — don't copy the badge without namespacing it. -->
+      <path id="circle-badge-path" d="M50,50 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0" />
+    </defs>
+    <text class="circle-badge__text">
+      <textPath href="#circle-badge-path">ALEX USCATA — SOFTWARE DEVELOPER —</textPath>
+    </text>
+  </svg>
+  <span class="circle-badge__arrow">↓</span>
 </div>
