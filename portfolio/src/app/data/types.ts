@@ -14,6 +14,14 @@ export interface Project {
   description: string;
   /** OKLCH hue driving cover gradient + screenshot tints (see gradient helpers). */
   hue: number;
+  /**
+   * Optional cover image under public/, e.g. '/images/work/roamnote.jpg'. When
+   * set it replaces the hue gradient on the cursor-preview card and the detail
+   * cover; without it the gradient stays the fallback — which is why `hue` is
+   * required and this is not. Always read it through `coverBackground()`, never
+   * branch on it at the call site.
+   */
+  cover?: string;
   /** Present only if the project has a live site / public repo. */
   liveUrl?: string;
   gitUrl?: string;
