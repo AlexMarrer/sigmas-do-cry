@@ -13,9 +13,10 @@ export const routeMeta: RouteMeta = {
 @Component({
   selector: 'app-project-detail-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `<h1>{{ slug() }} — TODO(spec: specs/04-project-detail.md)</h1>`,
+  templateUrl: './index.page.html',
+  styleUrls: ['./index.page.scss'],
 })
 export default class ProjectDetailPage {
-  // Bound by withComponentInputBinding() (app.config.ts) — no ActivatedRoute.
+  // ⚠ C3: bound by withComponentInputBinding() — no ActivatedRoute.
   readonly slug = input.required<string>();
 }

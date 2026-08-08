@@ -1,0 +1,14 @@
+// spec: specs/04-project-detail.md
+@use "../../../../styles/grid";
+
+// ⚠ G1: page hosts are inline by UA default.
+:host {
+  display: block;
+}
+
+.project {
+  @include grid.wrapper;
+  // TEMP: clears the fixed nav until the real header carries its own
+  // padding-top. Remove then — don't stack.
+  padding-top: clamp(8.75rem, 18vw, 13.125rem);
+}

@@ -13,9 +13,7 @@ export const routeMeta: RouteMeta = {
 @Component({
   selector: 'app-about-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  // TEMP: clears the fixed nav until the real section carries its own
-  // padding-top (spec: clamp(140px,18vw,210px)). Remove then — don't stack.
-  styles: `:host { display: block; padding-top: clamp(140px, 18vw, 210px); }`,
-  template: `<h1>About — TODO(spec: specs/05-about.md)</h1>`,
+  templateUrl: './index.page.html',
+  styleUrls: ['./index.page.scss'],
 })
 export default class AboutPage {}
