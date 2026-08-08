@@ -1,34 +1,37 @@
 // spec: specs/07-footer.md — block = .footer (root-class wrapper convention)
-@use '../../../styles/grid';
-@use '../../../styles/tokens';
+@use "sass:color";
+@use "../../../styles/grid";
+@use "../../../styles/hover-wipe";
+@use "../../../styles/tokens";
 
 // Grid frame supplies the horizontal gutters + 1400px content column, so the
 // section only pads vertically. No media queries anywhere in here — every
 // dimension the design scales is a clamp(), the bars wrap via flex-wrap.
 .footer {
   @include grid.wrapper;
-  padding-block: clamp(90px, 12vw, 160px) 30px;
+  padding-block: clamp(5.625rem, 12vw, 10rem) 1.875rem;
 }
 
 // The design insets the footer relative to the nav / page content. This sits
 // INSIDE the content column (not as padding on the grid root), so the inset
 // survives on ultrawide screens where the column caps at 1400px — otherwise it
 // would just be swallowed by the fluid gutters and the footer would end up
-// flush with the nav again. Stepped instead of clamped so ≥922px is exactly
-// the 5rem the design calls for (⚠ G3: declarations before the down() blocks).
+// flush with the nav again. Stepped instead of clamped, mobile-first: base is
+// the phone value and each up() adds a wider tier (≥992px lands on the 5rem the
+// design calls for).
 .footer__inner {
-  padding-inline: 5rem;
+  padding-inline: 1rem;
 
-  @include tokens.down(tokens.$bp-md) {
-    padding-inline: 3rem;
-  }
-
-  @include tokens.down(tokens.$bp-sm) {
+  @include tokens.up(tokens.$bp-xs) {
     padding-inline: 1.5rem;
   }
 
-  @include tokens.down(tokens.$bp-xs) {
-    padding-inline: 1rem;
+  @include tokens.up(tokens.$bp-sm) {
+    padding-inline: 3rem;
+  }
+
+  @include tokens.up(tokens.$bp-md) {
+    padding-inline: 5rem;
   }
 }
 
@@ -56,7 +59,7 @@
 
 .footer__headline {
   margin-top: 1.625rem;
-  font-size: clamp(46px, 7.5vw, 116px);
+  font-size: clamp(2.875rem, 7.5vw, 7.25rem);
   font-weight: 550; // D5 — needs the variable font
   letter-spacing: tokens.$ls-display;
   line-height: 1.02;
@@ -68,18 +71,18 @@
 // literal instead of a theme var.
 .footer__cta-line {
   position: relative;
-  margin-top: clamp(56px, 8vw, 100px);
+  margin-top: clamp(3.5rem, 8vw, 6.25rem);
   border-top: 1px solid rgba(239, 236, 231, 0.22);
 }
 
 .footer__cta {
   position: absolute;
   top: 0;
-  right: clamp(8px, 8vw, 120px);
+  right: clamp(0.5rem, 8vw, 7.5rem);
   display: flex;
   align-items: center;
   justify-content: center;
-  width: clamp(122px, 12vw, 164px);
+  width: clamp(7.625rem, 12vw, 10.25rem);
   aspect-ratio: 1;
   border-radius: 50%;
   background: var(--accent);
@@ -92,16 +95,29 @@
   // custom props only — assigning style.transform would teleport the circle
   // onto the line.
   transform: translateY(-50%) translate(var(--mx, 0px), var(--my, 0px));
+  // Fixed white/ink fill so the CTA matches .btn--primary regardless of
+  // section. ⚠ The mixin sets no `position` on purpose — this element is
+  // absolute, a `relative` would drop it off the hairline (specs/hover-wipe.md).
+  @include hover-wipe.wipe(tokens.$bg-light, $pressed-shadow: inset 0 0.1875rem 0.5rem rgba(0, 0, 0, 0.3));
   transition:
-    background 0.35s,
-    color 0.35s,
+    color 0.35s 0.1s,
     transform 0.35s tokens.$ease-hover;
 
+  // ⚠ no `background` here — the fill layer owns the hover colour now.
   &:hover,
   &:focus-visible {
-    // Flipped theme vars: light disc, ink text on the dark footer.
-    background: var(--ink);
-    color: var(--bg);
+    color: tokens.$ink;
+  }
+
+  &:active {
+    color: tokens.$ink;
+    transform: translateY(-50%) translate(var(--mx, 0px), var(--my, 0px)) scale(0.98);
+  }
+
+  // Pressed: dimmed white (primary "active" look) — on the fill layer, since
+  // the host's background paints underneath it. Inner shadow: $pressed-shadow.
+  &:active::before {
+    background: color.mix(tokens.$ink, tokens.$bg-light, 12%);
   }
 }
 
@@ -109,7 +125,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.875rem;
-  margin-top: clamp(56px, 8vw, 96px);
+  margin-top: clamp(3.5rem, 8vw, 6rem);
 }
 
 .footer__pill {
@@ -119,20 +135,34 @@
 }
 
 .footer__pill--mail {
+  position: relative; // containing block for the wipe layer
   border: 1px solid var(--hairline-strong);
   font-weight: 550;
   // Magnetic host: the directive writes --mx/--my, this transform composes
   // them (D3); the transition is the spring-back.
   transform: translate(var(--mx, 0px), var(--my, 0px));
+  // Fill stays a var() so it follows the section theme.
+  @include hover-wipe.wipe(var(--accent));
   transition:
-    background 0.3s,
-    color 0.3s,
+    color 0.3s 0.1s,
+    border-color 0.3s,
     transform 0.35s tokens.$ease-hover;
 
+  // Secondary: neutral at rest → accent on hover → darker accent when pressed.
+  // ⚠ no `background` here — the fill layer owns it.
   &:hover,
   &:focus-visible {
-    background: var(--ink);
-    color: var(--bg);
+    color: var(--accent-contrast);
+    border-color: var(--accent);
+  }
+
+  &:active {
+    color: var(--accent-contrast);
+    border-color: color-mix(in srgb, var(--accent), #000 12%);
+  }
+
+  &:active::before {
+    background: color-mix(in srgb, var(--accent), #000 12%);
   }
 }
 
@@ -148,7 +178,7 @@
   align-items: flex-end;
   justify-content: space-between;
   gap: 1.625rem;
-  margin-top: clamp(70px, 9vw, 110px);
+  margin-top: clamp(4.375rem, 9vw, 6.875rem);
   border-top: 1px solid rgba(239, 236, 231, 0.14); // bespoke alpha, see above
   padding-top: 1.625rem;
 }
