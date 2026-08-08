@@ -3,6 +3,12 @@
 // Sie greift nur, solange kein _worker.js im Build-Output liegt (siehe Build-Befehl
 // in den Pages-Settings: `npm run build && rm -rf dist/analog/public/_worker.js`).
 export const onRequest = async ({ request, env, next }) => {
+  // ⚠ Ohne diesen Riegel waeren fehlende Secrets ein Login mit
+  // "undefined"/"undefined" — also ein offenes Tor statt einer Sperre.
+  if (!env.SITE_USER || !env.SITE_PASS) {
+    return new Response('Auth not configured', { status: 503 });
+  }
+
   const expected = 'Basic ' + btoa(`${env.SITE_USER}:${env.SITE_PASS}`);
 
   if (request.headers.get('Authorization') !== expected) {
