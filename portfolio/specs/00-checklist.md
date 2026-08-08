@@ -34,7 +34,9 @@ Definition of done per item: matches the screenshot/prototype visually, works ke
 - [ ] Project detail page → [04-project-detail.md](04-project-detail.md) — slug input (⚠ C3), dynamic title (⚠ C5), `nextProject()` in data layer
 - [ ] About page → [05-about.md](05-about.md)
 - [ ] Gallery page, static tiles → [06-gallery.md](06-gallery.md) — masonry (⚠ D6), tiles as buttons (⚠ E1)
-- [ ] Gallery on real photos → [photos.md](photos.md) — rework `Trip` (slug/country/year/cover/captions), drop `TripShot`, tiles to `ngSrc` + custom image loader (⚠ F5), place filter. Needs a first trip in `photos/`.
+- [x] Gallery data layer → [photos.md](photos.md) — DONE (2026-08-08): `Trip` reworked (slug/name/country/year + optional cover/captions), `TripShot` dropped, `data/gallery.ts` joins the hand-written and generated halves (`galleryTrips`, `captionFor`, `photoSrc`). First real trip encoded: `korea-2025`, 46 photos, 8.4 MB.
+- [x] Gallery on real photos → [photos.md](photos.md) — DONE (2026-08-08): `IMAGE_LOADER` provider with absolute-src passthrough (⚠ F5), tiles render `ngSrc`/`ngSrcset` off `photo.widths`, `tone` + `aspect-ratio` on the button (⚠ D6, measured CLS-free). Verified on `korea-2025`: 13 pages built, 136 AVIFs shipped, srcset in the prerendered HTML, hero src unrewritten.
+- [ ] Place filter → [photos.md](photos.md) § Filtering & scale — chips over `country`, `?place=` in the query params. Dead UI until there are ~4 trips; revisit then.
 - [ ] Re-run `npm run build` — still 13 pages, spot-check `/work/velora/index.html` content
 
 ## 4 · Motion & interaction layer (order matters: service → simple → complex)

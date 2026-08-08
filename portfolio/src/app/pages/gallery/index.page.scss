@@ -1,5 +1,6 @@
 // spec: specs/06-gallery.md
 @use "../../../styles/grid";
+@use "../../../styles/tokens";
 
 // ⚠ G1: page hosts are inline by UA default.
 :host {
@@ -8,7 +9,129 @@
 
 .gallery {
   @include grid.wrapper;
-  // TEMP: clears the fixed nav until the real section carries its own
-  // padding-top (spec: clamp(140px,18vw,210px)). Remove then — don't stack.
-  padding-top: clamp(8.75rem, 18vw, 13.125rem);
+  padding-block: clamp(8.75rem, 18vw, 13.125rem) clamp(5rem, 10vw, 8.125rem);
+
+  &__label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    opacity: 0.55;
+  }
+
+  &__title {
+    margin-top: 0.25em;
+    font-size: clamp(3.375rem, 8.5vw, 8.125rem);
+    font-weight: 550;
+    line-height: 0.96;
+    letter-spacing: -0.035em;
+  }
+
+  &__intro {
+    max-width: 32.5rem;
+    margin-top: 1.625rem;
+    font-size: tokens.$fs-body;
+    line-height: 1.6;
+    opacity: 0.65;
+  }
+
+  &__trip {
+    margin-top: clamp(4.375rem, 9vw, 6.875rem);
+  }
+
+  &__trip-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 1.125rem;
+    border-top: 1px solid var(--hairline);
+    padding-top: 1.375rem;
+  }
+
+  &__trip-idx {
+    // ⚠ E4: small accent text uses --accent-text, not --accent.
+    color: var(--accent-text);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__trip-name {
+    font-size: clamp(1.5rem, 3vw, 2.625rem);
+    font-weight: 550;
+    letter-spacing: -0.02em;
+  }
+
+  &__trip-meta {
+    margin-left: auto;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    opacity: 0.5;
+  }
+
+  &__masonry {
+    margin-top: 1.75rem;
+    column-width: 20rem;
+    column-gap: 1.125rem;
+  }
+
+  &__tile {
+    display: block;
+    position: relative;
+    width: 100%;
+    margin-bottom: 1.125rem;
+    border: 0;
+    border-radius: tokens.$r-card;
+    padding: 0;
+    overflow: hidden;
+    break-inside: avoid;
+    cursor: pointer;
+    transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+
+    &:hover,
+    &:focus-visible {
+      transform: scale(1.015);
+    }
+
+    // ⚠ E1: the scale alone is not a focus indicator.
+    &:focus-visible {
+      outline: 2px solid var(--accent-text);
+      outline-offset: 3px;
+    }
+  }
+
+  &__img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &__caption {
+    position: absolute;
+    left: 1rem;
+    bottom: 0.8125rem;
+    color: rgb(255 255 255 / 0.9);
+    font-size: 0.75rem;
+    font-weight: 550;
+    letter-spacing: 0.02em;
+    text-align: left;
+  }
+
+  &__num {
+    position: absolute;
+    right: 1rem;
+    top: 0.8125rem;
+    color: rgb(255 255 255 / 0.55);
+    font-size: 0.6875rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__empty {
+    margin-top: 1.75rem;
+    font-size: 0.875rem;
+    opacity: 0.55;
+  }
 }

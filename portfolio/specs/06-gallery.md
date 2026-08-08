@@ -24,6 +24,6 @@ Section light, padding `clamp(140px,18vw,210px) var(--gutter) clamp(80px,10vw,13
 ## ⚠ LANDMINES
 
 - **E1** — tiles are `<button type="button">`, not clickable `<div>`s (keyboard + AT). Reset button chrome in CSS; give them a `:focus-visible` outline — the scale alone isn't a focus indicator.
-- **D6** — CSS columns order content down each column, so DOM order ≠ visual order; that's acceptable here (tab order stays logical per trip), but don't "fix" it by reordering data. When real photos land: every tile keeps its `aspect-ratio` box (space always reserved ⇒ no CLS from lazy loads) and images become `ngSrc` + width/height, lazy by default, `sizes="(max-width: 660px) 100vw, 320px"`.
+- **D6** — CSS columns order content down each column, so DOM order ≠ visual order; that's acceptable here (tab order stays logical per trip), but don't "fix" it by reordering data. When real photos land: every tile keeps its `aspect-ratio` box (space always reserved ⇒ no CLS from lazy loads) and images become `ngSrc` + width/height, lazy by default. `sizes` is **not** the `320px` column-width — columns stretch to ~455px, so it's `(max-width: 660px) 100vw, (max-width: 1080px) 46vw, min(31vw, 460px)`; see [photos.md](photos.md) § Frontend consumption.
 - **B5** — `@for (trip of trips; track trip.name)`, inner `@for (shot of trip.shots; track shot.caption)`.
 - Captions double as future `alt` text — they're already in the data; wire them when `<img>` replaces the tone `<div>` background.

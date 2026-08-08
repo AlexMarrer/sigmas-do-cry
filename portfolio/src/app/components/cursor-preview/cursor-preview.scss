@@ -43,9 +43,8 @@
     scale: 1;
   }
 
-  // TODO: white on the hue gradient is safe (it is always the dark end of the
-  // ramp). Real cover images are not — once `cover` paths land, either put a
-  // scrim behind the text or commit to dark-enough crops.
+  // Scrim resolved: `coverBackground()` layers 55% black over the screenshot,
+  // so white text is safe on both the hue ramp and real covers.
   &__title {
     font-size: 1.625rem;
     font-weight: 600;

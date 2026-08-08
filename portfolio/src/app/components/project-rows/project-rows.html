@@ -1,61 +1,32 @@
-<!-- spec: specs/03-work.md § Project rows -->
 <div class="project-rows" (mouseleave)="clear()">
   @for (project of projects(); track project.slug; let i = $index) {
-    <!-- ⚠ A4: this stays an <article>, never an <a>. The pill links below live
-         inside it, and a nested <a> gets re-parented by the parser when the
-         prerendered HTML is read back — the DOM stops matching what Angular
-         rendered and hydration dies with NG0500. The title link is stretched
-         over the whole row from the SCSS instead (::after { inset: 0 }), which
-         also keeps the row crawlable and needs no click handler.
-         ⚠ E1: focusin, not just mouseenter — without it the description and the
-         link pills are unreachable for keyboard users. -->
-    <article
-      class="project-rows__row"
-      [class.project-rows__row--open]="hovered()?.slug === project.slug"
-      (mouseenter)="activate(project)"
-      (focusin)="activate(project)"
-    >
-      <div class="project-rows__line">
-        <span class="project-rows__num">{{ pad(i) }}</span>
-        <a class="project-rows__title" [routerLink]="['/work', project.slug]">{{ project.title }}</a>
-        <span class="project-rows__spacer"></span>
-        <span class="project-rows__category">{{ project.category }}</span>
-        <span class="project-rows__year">{{ project.year }}</span>
-      </div>
+  <article
+    class="project-rows__row"
+    [class.project-rows__row--open]="hovered()?.slug === project.slug"
+    (mouseenter)="activate(project)"
+    (focusin)="activate(project)">
+    <div class="project-rows__line">
+      <span class="project-rows__num">{{ pad(i) }}</span>
+      <a class="project-rows__title" [routerLink]="['/work', project.slug]">{{ project.title }}</a>
+      <span class="project-rows__spacer"></span>
+      <span class="project-rows__category">{{ project.category }}</span>
+      <span class="project-rows__year">{{ project.year }}</span>
+    </div>
 
-      <!-- ⚠ D2: the expansion is grid-template-rows 0fr → 1fr on __detail, with
-           min-height: 0 + overflow: hidden on __detail-inner. Never max-height —
-           it clips wrapped content on mobile and closes laggily. -->
-      <div class="project-rows__detail">
-        <div class="project-rows__detail-inner">
-          <p class="project-rows__description">{{ project.description }}</p>
-          <span class="project-rows__links">
-            @if (project.liveUrl) {
-              <a
-                class="project-rows__link"
-                [href]="project.liveUrl"
-                target="_blank"
-                rel="noopener"
-                appHoverWipe
-                >Live site ↗</a
-              >
-            }
-            @if (project.gitUrl) {
-              <a
-                class="project-rows__link"
-                [href]="project.gitUrl"
-                target="_blank"
-                rel="noopener"
-                appHoverWipe
-                >GitHub ↗</a
-              >
-            }
-            <!-- Label, not a link — the stretched title already navigates here.
-                 ⚠ E4: accent text this small needs --accent-text. -->
-            <span class="project-rows__case">Case study →</span>
-          </span>
-        </div>
+    <div class="project-rows__detail">
+      <div class="project-rows__detail-inner">
+        <p class="project-rows__description">{{ project.description }}</p>
+        <span class="project-rows__links">
+          @if (project.liveUrl) {
+          <a class="project-rows__link" [href]="project.liveUrl" target="_blank" rel="noopener" appHoverWipe>Live site ↗</a>
+          } @if (project.gitUrl) {
+          <a class="project-rows__link" [href]="project.gitUrl" target="_blank" rel="noopener" appHoverWipe>GitHub ↗</a>
+          }
+
+          <span class="project-rows__case">Case study →</span>
+        </span>
       </div>
-    </article>
+    </div>
+  </article>
   }
 </div>

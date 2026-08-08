@@ -1,5 +1,51 @@
-<!-- TODO(spec: specs/06-gallery.md) — "Off the clock", 3 trip groups from
-     data/trips.ts, CSS-columns masonry (⚠ D6), tiles as <button> (⚠ E1). -->
 <section class="gallery">
-  <h1 class="gallery__title">Gallery — TODO(spec: specs/06-gallery.md)</h1>
+  <header class="gallery__head reveal--fade-in-up" appScrollReveal>
+    <p class="gallery__label">Gallery</p>
+    <h1 class="gallery__title">Off the clock</h1>
+    <p class="gallery__intro">
+      Photographs from the road — the places I walked through between projects, picked
+      down to the handful that still hold up.
+    </p>
+  </header>
+
+  @for (trip of trips; track trip.slug; let t = $index) {
+    <section class="gallery__trip">
+      <div class="gallery__trip-head reveal--fade-in-up" appScrollReveal>
+        <span class="gallery__trip-idx">{{ pad(t + 1) }}</span>
+        <h2 class="gallery__trip-name">{{ trip.name }}</h2>
+        <span class="gallery__trip-meta">{{ trip.meta }}</span>
+      </div>
+
+      <!-- ⚠ D6: columns run top-to-bottom per column, so DOM order ≠ visual order. -->
+      <div class="gallery__masonry">
+        @for (photo of trip.photos; track photo.id; let i = $index) {
+          <!-- ⚠ E1: a <button>, not a clickable div. -->
+          <button
+            type="button"
+            class="gallery__tile"
+            [style.aspectRatio]="photo.width + ' / ' + photo.height"
+            [style.backgroundColor]="photo.tone"
+            (click)="lightbox.set({ trip: t, index: i })">
+            <img
+              class="gallery__img"
+              [ngSrc]="photoSrc(trip, photo)"
+              [ngSrcset]="photo.widths.join('w, ') + 'w'"
+              [width]="photo.width"
+              [height]="photo.height"
+              sizes="(max-width: 660px) 100vw, (max-width: 1080px) 46vw, min(31vw, 460px)"
+              [alt]="captionFor(trip, photo)" />
+            <span class="gallery__caption">{{ captionFor(trip, photo) }}</span>
+            <span class="gallery__num" aria-hidden="true">{{ pad(i + 1) }}</span>
+          </button>
+        } @empty {
+          <p class="gallery__empty">
+            Nothing encoded yet — drop originals in <code>photos/{{ trip.slug }}/</code>
+            and run <code>npm run photos</code>.
+          </p>
+        }
+      </div>
+    </section>
+  } @empty {
+    <p class="gallery__empty">No trips in <code>src/app/data/trips.ts</code> yet.</p>
+  }
 </section>

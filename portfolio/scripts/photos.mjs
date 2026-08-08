@@ -32,6 +32,11 @@ const prune = process.argv.includes('--prune');
 const warnings = [];
 const warn = (msg) => warnings.push(msg);
 
+// Notes are next-steps, not errors — they must not colour the exit code, because
+// "encode the photos, then write the trips.ts entry" is the normal order of work.
+const notes = [];
+const note = (msg) => notes.push(msg);
+
 const slugify = (s) =>
   s
     .toLowerCase()
@@ -195,6 +200,36 @@ export const galleryPhotos: Record<string, GalleryPhoto[]> = ${
 `;
 }
 
+/**
+ * Cross-check the generated slugs against the hand-written half. A trip with photos
+ * but no `trips.ts` entry renders as nothing at all, and an entry with no folder
+ * renders as an empty group — both are silent failures without this.
+ * Advisory only: a mid-edit `trips.ts` must never break the pipeline.
+ */
+async function crossCheckTripsFile(tripDirs, manifest) {
+  let known;
+  try {
+    // Works because trips.ts has no runtime imports (only `import type`, which Node
+    // strips). Add a real import there and this resolution fails — say so rather
+    // than quietly dropping the check that exists to prevent quiet failures.
+    const mod = await import('../src/app/data/trips.ts');
+    known = mod.trips.map((t) => t.slug);
+  } catch (err) {
+    note(`skipped the trips.ts cross-check — couldn't read it (${err.code ?? err.message})`);
+    return;
+  }
+  for (const slug of Object.keys(manifest)) {
+    if (!known.includes(slug)) {
+      note(`${slug} has photos but no entry in src/app/data/trips.ts — it won't render yet`);
+    }
+  }
+  for (const slug of known) {
+    if (!tripDirs.includes(slug)) {
+      note(`trips.ts lists "${slug}" but photos/${slug}/ doesn't exist — empty group`);
+    }
+  }
+}
+
 async function dirSize(dir) {
   if (!existsSync(dir)) return 0;
   let total = 0;
@@ -271,10 +306,17 @@ async function main() {
     if (!prune) console.log(`\n  ${orphans.length} orphan(s) — re-run with --prune to delete.`);
   }
 
+  if (skipped === 0) await crossCheckTripsFile(tripDirs, manifest);
+
   if (warnings.length > 0) {
     console.log('');
     for (const w of warnings) console.log(`  ! ${w}`);
     process.exitCode = 1;
+  }
+
+  if (notes.length > 0) {
+    console.log('');
+    for (const n of notes) console.log(`  · ${n}`);
   }
 
   console.log(

@@ -1,6 +1,8 @@
 import { ApplicationConfig, provideZonelessChangeDetection } from '@angular/core';
+import { IMAGE_LOADER, type ImageLoaderConfig } from '@angular/common';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { provideFileRouter } from '@analogjs/router';
+import { widthsFor } from './data/gallery';
 import {
   withComponentInputBinding,
   withInMemoryScrolling,
@@ -22,5 +24,16 @@ export const appConfig: ApplicationConfig = {
       withViewTransitions({ skipInitialTransition: true }),
     ),
     provideClientHydration(withEventReplay()),
+    // ⚠ F5: this replaces the loader for EVERY NgOptimizedImage in the app, and
+    // the plain `ngSrc` goes through it too — hence the passthrough, or the hero's
+    // /images/hero-cutout.png would be rewritten into a gallery URL.
+    // Gallery srcs are `<trip-slug>/<photo-id>` (see gallery.ts · photoSrc).
+    {
+      provide: IMAGE_LOADER,
+      useValue: ({ src, width }: ImageLoaderConfig) => {
+        if (src.startsWith('/')) return src;
+        return `/images/gallery/${src}-${width ?? widthsFor(src).at(-1)}.avif`;
+      },
+    },
   ],
 };

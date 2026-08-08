@@ -55,23 +55,34 @@ export interface GalleryPhoto {
   takenAt: string;
 }
 
-// TODO: superseded by GalleryPhoto once the gallery renders real photos —
-// drop TripShot and rework Trip (slug/country/year/cover/captions) then.
-export interface TripShot {
-  /** CSS aspect-ratio value, e.g. '3 / 4'. */
-  aspect: string;
-  /** Numeric w/h ratio — the lightbox sizes the stage from it. */
-  ratio: number;
-  caption: string;
-  /** Placeholder tone (hex) until real photos land. */
-  tone: string;
+/**
+ * One trip, HAND-MAINTAINED in `trips.ts`. Holds only what a person decides —
+ * everything measurable lives in GalleryPhoto and is generated. Four required
+ * fields per trip is the whole maintenance cost; join the two halves through
+ * `gallery.ts`, never by reaching into `galleryPhotos` directly.
+ */
+export interface Trip {
+  /** Folder name under `photos/`, key into `galleryPhotos`, future `/gallery/{slug}` route. */
+  slug: string;
+  /** Display name — the place, not the country: 'Seoul', 'Bernese Oberland'. */
+  name: string;
+  country: string;
+  year: number;
+  /** Photo id for the index card. Falls back to the first photo when unset. */
+  cover?: string;
+  /** Photo id → caption. Sparse on purpose: caption the few that earn one, the
+   *  rest fall back to name + country via `captionFor()`. */
+  captions?: Record<string, string>;
 }
 
-export interface Trip {
-  name: string;
-  /** e.g. 'Switzerland · 2025 · 6 photos' */
+/** A Trip with its generated photos joined in. Built by `gallery.ts`, never written by hand. */
+export interface GalleryTrip extends Trip {
+  /** Capture-date ascending. Empty until `npm run photos` has encoded this trip. */
+  photos: GalleryPhoto[];
+  /** Resolved `cover`, falling back to the first photo. Undefined only when `photos` is empty. */
+  coverPhoto: GalleryPhoto | undefined;
+  /** e.g. 'South Korea · 2025 · 46 photos' — derived, so the count can't go stale. */
   meta: string;
-  shots: TripShot[];
 }
 
 export interface SkillGroup {

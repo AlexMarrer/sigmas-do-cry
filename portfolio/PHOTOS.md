@@ -45,9 +45,24 @@ npm run photos
 
 First run on a trip encodes everything, which takes a while — AVIF is slow, budget roughly a second or two per variant. Later runs only touch what changed.
 
-**5 · Add the trip's metadata by hand** in `src/app/data/trips.ts` — display name, country, year, cover photo, captions. The script never writes this file; it only ever writes `trips.generated.ts`.
+**5 · Add the trip to `src/app/data/trips.ts`.** Four fields, same slug as the folder:
 
-> **Not wired yet.** `trips.ts` still holds the placeholder data from the prototype. The rework to `slug`/`country`/`year`/`cover`/`captions` is checklist item §3 "Gallery on real photos". Until that lands, `npm run photos` produces a correct manifest that nothing reads yet.
+```ts
+{ slug: 'korea-2025', name: 'Seoul', country: 'South Korea', year: 2025 },
+```
+
+`name` is the **place**, not the country — uncaptioned photos fall back to `"{name}, {country}"` as their alt text, and `"Korea, South Korea"` reads like a bug.
+
+Optional, add whenever you feel like it:
+
+```ts
+cover: 'alu00463',                              // defaults to the first photo
+captions: { 'alu00463': 'Bukchon at dusk' },    // sparse — only what earns one
+```
+
+The script never writes this file, and you never write `trips.generated.ts`. If the two drift apart — photos with no entry, or an entry with no folder — the next `npm run photos` says so.
+
+> **The gallery page doesn't render yet.** The data layer is complete and joined (`data/gallery.ts`), but the view is still a stub. That's checklist item §3 "Gallery on real photos".
 
 **6 · Commit.** These are the outputs:
 
@@ -105,4 +120,6 @@ Your originals in `photos/` are never modified, only read. Everything is still i
 
 ## Roughly how much space this takes
 
-Three AVIF variants per photo (400 / 900 / 1800 px wide) come to about 350 KB total. At the planned scale — 15–20 trips, 6–30 photos each — that's ~120 MB for 350 photos and ~210 MB at 600. Comfortable for both git and Cloudflare Pages, which allows 20 000 files per deployment (you'd be at roughly 1 800). No CDN or external storage needed; the reasoning is in [`specs/photos.md`](specs/photos.md).
+Measured on `korea-2025` — 46 photos, 136 variants, 8.4 MB — that's about **187 KB per photo** across its three AVIF sizes. At the planned scale of 15–20 trips you land around 65 MB for 350 photos, ~112 MB at 600, across at most 1 800 files.
+
+Comfortable for both git and Cloudflare Pages, which allows 20 000 files per deployment. No CDN or external storage needed; the reasoning is in [`specs/photos.md`](specs/photos.md).
