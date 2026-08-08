@@ -33,6 +33,30 @@ export interface Project {
   shots: string[];
 }
 
+/**
+ * One gallery photo. GENERATED into `trips.generated.ts` by `npm run photos` —
+ * every field here comes from the file itself, so none of it is hand-maintained.
+ * URL: `/images/gallery/{tripSlug}/{id}-{width}.avif`.
+ */
+export interface GalleryPhoto {
+  /** Slugified original filename. Permanent — lightbox deeplinks key on it, so
+   *  never renumber; renaming a source file orphans its derivatives. */
+  id: string;
+  /** Intrinsic size of the LARGEST generated variant — drives the aspect-ratio
+   *  box (⚠ D6, no CLS) and satisfies NgOptimizedImage's width/height. */
+  width: number;
+  height: number;
+  /** Which variants actually exist, ascending — feeds `ngSrcset`. Small sources
+   *  get fewer than the full [400, 900, 1800]; never assume all three. */
+  widths: number[];
+  /** Average colour of the photo — the flat placeholder behind the lazy image. */
+  tone: string;
+  /** EXIF DateTimeOriginal (mtime fallback), ISO. Sort key within a trip. */
+  takenAt: string;
+}
+
+// TODO: superseded by GalleryPhoto once the gallery renders real photos —
+// drop TripShot and rework Trip (slug/country/year/cover/captions) then.
 export interface TripShot {
   /** CSS aspect-ratio value, e.g. '3 / 4'. */
   aspect: string;

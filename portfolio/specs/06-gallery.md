@@ -2,6 +2,8 @@
 
 **Purpose.** "Off the clock" — 3 trip groups with CSS-columns masonry of placeholder tiles, opening the lightbox. README § View 6; screenshot `05-gallery.png`.
 
+Everything below describes the **placeholder** stage. Where the real photos come from, what replaces `TripShot`, the place filter, and the point at which this one page has to split into `/gallery` + `/gallery/[slug]` are all in [photos.md](photos.md).
+
 ## Structure & numbers
 
 Section light, padding `clamp(140px,18vw,210px) var(--gutter) clamp(80px,10vw,130px)`, inner max-width 1400.
