@@ -10,7 +10,7 @@
 // Usage:  <section class="theme-dark">…</section>
 // ─────────────────────────────────────────────────────────────────────────────
 
-@use 'tokens';
+@use "tokens";
 
 .theme-dark {
   --bg: #{tokens.$ink};
@@ -19,7 +19,13 @@
   --hairline-strong: #{tokens.$hairline-on-dark-strong};
   // E4: small accent text needs a brighter red on dark (see _tokens.scss).
   --accent-text: #{tokens.$accent-text-on-dark};
+  --accent: #{tokens.$accent};
+  --ink-highlight: #{tokens.$bg-light};
 
   background: var(--bg);
   color: var(--ink);
+
+  ::selection {
+    background: var(--accent);
+  }
 }

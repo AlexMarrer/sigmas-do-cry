@@ -14,7 +14,7 @@
 // things custom props can't do (breakpoints in @media, mixin params).
 // ─────────────────────────────────────────────────────────────────────────────
 
-@use 'sass:map';
+@use "sass:map";
 
 // ── Colors ───────────────────────────────────────────────────────────────────
 $bg-light: #efece7; // warm off-white
@@ -34,10 +34,10 @@ $hairline-on-dark: rgba(239, 236, 231, 0.16);
 $hairline-on-dark-strong: rgba(239, 236, 231, 0.3);
 
 // ── Typography ───────────────────────────────────────────────────────────────
-$font-sans: 'Hanken Grotesk', ui-sans-serif, system-ui, sans-serif;
-$fs-display: clamp(70px, 11.5vw, 200px); // hero marquee
-$fs-row-title: clamp(26px, 3.6vw, 56px); // project rows
-$fs-body: 17px;
+$font-sans: "Hanken Grotesk", ui-sans-serif, system-ui, sans-serif;
+$fs-display: clamp(4.375rem, 11.5vw, 12.5rem); // hero marquee
+$fs-row-title: clamp(1.625rem, 3.6vw, 3.5rem); // project rows
+$fs-body: 1.0625rem;
 $lh-body: 1.65;
 $ls-display: -0.035em;
 $ls-title: -0.025em;
@@ -46,23 +46,35 @@ $ls-title: -0.025em;
 // each view's spec, don't invent a shared token for them.
 
 // ── Spacing & radii ──────────────────────────────────────────────────────────
-$gutter: clamp(20px, 5vw, 72px);
-$section-pad: clamp(80px, 10vw, 140px);
-$section-pad-tall: clamp(90px, 12vw, 170px);
-$max-width: 1400px;
+$gutter: clamp(1.25rem, 5vw, 4.5rem);
+$section-pad: clamp(5rem, 10vw, 8.75rem);
+$section-pad-tall: clamp(5.625rem, 12vw, 10.625rem);
+$max-width: 87.5rem;
+// Ultrawide: content is frozen from ~1544px (1400 + 2×72) up — at $bp-xl the
+// column goes effectively full-width, the subtracted amount being the two side
+// gutters combined (the 1fr tracks split it evenly, so each side gets half).
+$max-width-xl: calc(100% - 50rem);
 $r-pill: 999px;
-$r-card: 16px; // gallery tiles
-$r-card-md: 18px; // cursor-preview / lightbox stage
-$r-card-lg: 22px; // about portrait, shot cards
-$r-card-xl: 26px; // project cover
+$r-card: 1rem; // gallery tiles
+$r-card-md: 1.125rem; // cursor-preview / lightbox stage
+$r-card-lg: 1.375rem; // about portrait, shot cards
+$r-card-xl: 1.625rem; // project cover
 
-// ── Breakpoints (README: ≤922 / ≤768 / ≤360) ────────────────────────────────
-$bp-md: 922px;
+// ── Breakpoints (README: ≤922 / ≤768 / ≤360; xl added 2026-08-05) ───────────
+$bp-xl: 2560px; // ultrawide — only consumer is the --max-width bump (styles.scss)
+$bp-lg: 1440px;
+$bp-md: 992px;
 $bp-sm: 768px;
-$bp-xs: 360px;
+$bp-xs: 320px;
 
 @mixin down($bp) {
   @media (max-width: $bp) {
+    @content;
+  }
+}
+
+@mixin up($bp) {
+  @media (min-width: $bp) {
     @content;
   }
 }
@@ -71,4 +83,4 @@ $bp-xs: 360px;
 $ease-reveal: cubic-bezier(0.2, 0.65, 0.3, 1); // entrances, scroll reveals
 $ease-hover: cubic-bezier(0.2, 0.8, 0.2, 1); // magnetic spring, hover scale
 $ease-expand: cubic-bezier(0.3, 0.9, 0.25, 1); // row expand/collapse
-$marquee-duration: 26s; // tweakable 10–60s
+$marquee-duration: 55s; // tweakable 10–60s

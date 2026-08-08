@@ -84,9 +84,19 @@ SCSS-only (media queries can't read custom props): `tokens.$bp-*` plus the
 - **Open decision (2026-08-05):** 320px was floated as the smallest breakpoint;
   README and tokens say 360px. If 320 wins, change `$bp-xs` here and note the
   deviation — don't fork a second token.
-- **Deliberately no 1440 / 2650 tokens.** The design has no rules above 1400px
-  — the frame's ultrawide behavior is automatic (see above). Add a token only
-  when a component actually needs one, not in advance.
+- **Ultrawide `$bp-xl` = 2560px (added 2026-08-05).** From ~1544px the frame
+  freezes (content 1400px, gutters absorb); at ≥2560 the content column goes
+  `$max-width-xl` = `calc(100% - Xrem)` — effectively full width, where X is the
+  two side gutters combined (the `1fr` tracks split it evenly, half per side).
+  Tune X by eye in `_tokens.scss`; it is not a design-spec number.
+  Mechanism: the wrapper's content track is `minmax(0, var(--max-width, 1400px))`
+  and **one** `:root` override in `styles.scss` bumps `--max-width` — no media
+  query is emitted into component styles. `up()` mixin exists alongside `down()`.
+  ⚠ The 1400 → ~2240 jump at the boundary is deliberate (owner call). Type
+  stays clamped, so line lengths grow with the column — if xl ever needs bigger
+  type, that's a separate decision, not more width.
+- **Still no 1440 token.** Between 1544 and 2560 the automatic behavior stands;
+  add a token only when a component actually needs one.
 
 ## Token architecture (⚠ the output-free rule)
 

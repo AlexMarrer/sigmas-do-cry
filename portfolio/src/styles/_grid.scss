@@ -33,7 +33,9 @@
   display: grid;
   grid-template-columns:
     [full-start] minmax(#{tokens.$gutter}, 1fr)
-    [content-start] minmax(0, tokens.$max-width)
+    // Runtime knob: styles.scss bumps --max-width at ≥$bp-xl — every wrapper
+    // follows without its own media query.
+    [content-start] minmax(0, var(--max-width, #{tokens.$max-width}))
     [content-end] minmax(#{tokens.$gutter}, 1fr)
     [full-end];
   width: 100%;

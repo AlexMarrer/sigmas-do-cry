@@ -1,8 +1,10 @@
 // Global entry — @use only (never @import: deprecated in Dart Sass).
-@use 'styles/fonts';
-@use 'styles/tokens';
-@use 'styles/reset';
-@use 'styles/themes';
+@use "styles/fonts";
+@use "styles/tokens";
+@use "styles/reset";
+@use "styles/themes";
+@use "styles/reveal";
+@use "styles/buttons";
 
 // Design-token runtime layer — :root IS the light theme (_themes.scss flips it
 // per section). Emitted here and only here: _tokens.scss must stay output-free
@@ -23,6 +25,15 @@
   --marquee-duration: #{tokens.$marquee-duration};
 }
 
+// Ultrawide: from ~1544px (1400 + 2×72) the frame freezes and the gutters
+// absorb everything — at $bp-xl the content column gets one more step. ONE
+// override; every grid.wrapper reads var(--max-width) at runtime.
+@include tokens.up(tokens.$bp-xl) {
+  :root {
+    --max-width: #{tokens.$max-width-xl};
+  }
+}
+
 html {
   background: var(--bg);
 }
@@ -33,6 +44,10 @@ body {
   line-height: tokens.$lh-body;
   background: var(--bg);
   color: var(--ink);
+}
+
+img {
+  user-select: none; // prevent accidental drag ghosting
 }
 
 // Sticky footer: the shell fills the viewport, <main> absorbs the slack so
