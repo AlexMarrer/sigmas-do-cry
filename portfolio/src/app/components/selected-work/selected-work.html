@@ -1,0 +1,14 @@
+<section class="selected-work">
+  <div class="selected-work__head reveal--fade-in-up" appScrollReveal>
+    <h2 class="selected-work__label">Selected work <span class="selected-work__count">/ {{ label() }}</span></h2>
+    <a class="selected-work__all link link--secondary" routerLink="/work">All projects →</a>
+  </div>
+
+  <app-project-rows class="selected-work__rows" [projects]="projects()" />
+
+  <div class="selected-work__cta">
+    <a class="selected-work__pill btn btn--secondary" routerLink="/work" appMagnetic appHoverWipe>
+      All work <span class="selected-work__pill-count">{{ total() }}</span>
+    </a>
+  </div>
+</section>

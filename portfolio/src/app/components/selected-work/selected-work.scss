@@ -1,0 +1,50 @@
+// spec: specs/02-home.md § Section 3
+@use "../../../styles/grid";
+@use "../../../styles/tokens";
+
+// ⚠ G1: the host is the page's flow item — hosts are inline by default.
+:host {
+  display: block;
+}
+
+.selected-work {
+  @include grid.wrapper;
+  padding-block: var(--section-pad) clamp(4.375rem, 9vw, 7.5rem);
+
+  &__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 1.75rem;
+    // TODO: 12px/.16em/uppercase/w600/opacity .55
+  }
+
+  &__count {
+    // ⚠ E4: small accent text uses --accent-text, not --accent.
+    color: var(--accent-text);
+  }
+
+  &__all {
+    // TODO: 13px w600 opacity .6; hover → var(--accent-text)
+  }
+
+  // ⚠ G1: host of <app-project-rows>.
+  // TODO: if the row hairlines should bleed edge to edge, grid.full-block goes
+  // HERE (on the host), not on the div inside the component.
+  &__rows {
+    display: block;
+  }
+
+  &__cta {
+    display: flex;
+    justify-content: center;
+    margin-top: 3.5rem;
+  }
+
+  // Pill shape, colours + hover/active come from .btn.btn--secondary (global);
+  // the anchor carries `btn btn--secondary` in the template.
+  &__pill-count {
+    font-size: 0.8125rem;
+    opacity: 0.55;
+  }
+}

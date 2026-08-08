@@ -1,0 +1,97 @@
+// spec: specs/02-home.md § Section 2
+@use "../../../styles/grid";
+@use "../../../styles/tokens";
+
+// ⚠ G1: the host is the page's flow item — hosts are inline by default.
+// ⚠ the badge overhangs the top edge: no overflow: hidden here either.
+:host {
+  display: block;
+}
+
+.intro {
+  @include grid.wrapper;
+  position: relative;
+  padding-block: clamp(5.625rem, 12vw, 10.625rem) var(--section-pad);
+
+  // ⚠ G1: positioned on the component host. `right: 0` is the grid equivalent
+  // of the spec's `right: var(--gutter)` — it stays on the content edge.
+  &__badge {
+    position: absolute;
+    top: -2.375rem;
+    right: 0;
+    z-index: 2;
+    display: block;
+    width: 4.75rem;
+    height: 4.75rem;
+    // ⚠ D3: appMagnetic sits on this host — compose --mx/--my here.
+    transform: translate(var(--mx, 0px), var(--my, 0px));
+    transition: transform 0.35s tokens.$ease-hover;
+
+    @include tokens.up(tokens.$bp-xs) {
+      top: -2.75rem;
+      width: 5.5rem;
+      height: 5.5rem;
+    }
+
+    @include tokens.up(tokens.$bp-sm) {
+      top: -3.25rem;
+      width: 6.5rem;
+      height: 6.5rem;
+    }
+
+    @include tokens.up(tokens.$bp-md) {
+      top: -4rem;
+      width: 8rem;
+      height: 8rem;
+    }
+  }
+
+  &__grid {
+    // Mobile-first: single column on phones, two columns from $bp-sm up.
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.375rem;
+    padding-inline: 1.5rem;
+
+    @include tokens.up(tokens.$bp-sm) {
+      grid-template-columns: 1.5fr 0.9fr;
+      gap: clamp(2rem, 5vw, 5rem);
+      padding-inline: 3rem;
+    }
+
+    @include tokens.up(tokens.$bp-md) {
+      padding-inline: 6rem;
+    }
+
+    @include tokens.up(tokens.$bp-lg) {
+      padding-inline: 10rem;
+    }
+  }
+
+  &__statement {
+    font-size: clamp(1.625rem, 3.3vw, 3.25rem);
+    font-weight: 500;
+    letter-spacing: -0.015em;
+    line-height: 1.18;
+  }
+
+  // flex column, not columns: the 26px is the gap between paragraph and pill.
+  &__support {
+    display: flex;
+    flex-direction: column;
+    gap: 1.625rem;
+    padding-top: 0.625rem;
+  }
+
+  &__body {
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    opacity: 0.7;
+  }
+
+  // Padding, border, colours + hover/active come from .btn.btn--primary
+  // (global); this only keeps the flex-child alignment.
+  &__pill {
+    align-self: flex-start; // flex child of __support — would stretch full-width otherwise
+  }
+}

@@ -27,8 +27,8 @@ section.hero (min-height 100vh, overflow hidden, flex center)
 
 - **F1** — this is the LCP. `ngSrc="/images/hero-cutout.png"` + `priority` + `width="1537" height="1023"` + `sizes="(max-width: 768px) 94vw, 67vw"`. `priority` emits the preload into the prerendered head; a sloppy `sizes` silently ships 2× the pixels.
 - **F2** — 318KB transparent PNG: generate an AVIF/WebP-with-alpha variant (typically −60–80%), `<picture>` or ngSrc with the new file; keep the drop-shadow in CSS.
-- Marquee seam: the second track is a *duplicate* with `aria-hidden="true"`; `−50%` only loops seamlessly if both tracks are identical.
-- `overflow: hidden` on the **hero section only** — never on `body` (kills sticky/fixed behavior).
+- Marquee seam: the animated element is `.hero__track`; it holds two identical `.hero__group`s (second `aria-hidden`), so `−50%` of the track equals exactly one group. Edit one group, edit both.
+- **D10 — clip, not hidden.** Clipping belongs on the **hero section only**, never on `body`. And it must be `overflow: clip`, with `overflow: hidden` as the preceding fallback declaration: `hidden` makes the section a scroll container, so the ~5×-viewport-wide track stays scrollable overflow area. That froze the viewport's scrolling region and the ICB across window resizes (`documentElement.scrollWidth` 2329 while every box measured 1286 → phantom horizontal scrollbar until reload, plus a mis-sized nav — D9, now historical: its JS width cap was removed once this root cause was found). `clip` only clips.
 - Entrance animation is pure CSS ⇒ SSG-safe and reduced-motion-safe via the global `_reset.scss` block. No JS.
 
 ## Section 2 — Intro (dark)

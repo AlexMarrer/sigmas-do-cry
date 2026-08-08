@@ -1,0 +1,150 @@
+@use "../../../styles/grid";
+@use "../../../styles/tokens";
+
+:host {
+  display: block;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.hero {
+  @include grid.wrapper;
+  position: relative;
+  overflow: hidden;
+  overflow: clip;
+  align-content: center;
+  min-height: 100vh;
+  min-height: 100svh;
+
+  &__marquee {
+    @include grid.full-block;
+
+    position: absolute;
+    top: 54%;
+    inset-inline: 0;
+    z-index: 1;
+    overflow: hidden; // fallback, see .hero
+    overflow: clip; // same reason as .hero — never a scroll container
+    transform: translateY(-50%);
+    user-select: none;
+  }
+
+  &__track {
+    display: flex;
+    width: max-content;
+    will-change: transform;
+    animation: marquee var(--marquee-duration) linear infinite;
+  }
+
+  &__group {
+    display: flex;
+    align-items: baseline;
+    gap: 0.45em;
+    padding-right: 0.45em;
+    font-size: tokens.$fs-display;
+    font-weight: 600;
+    letter-spacing: tokens.$ls-display;
+    line-height: 0.95;
+    white-space: nowrap;
+  }
+
+  &__dash {
+    font-weight: 400;
+    opacity: 0.25;
+  }
+
+  &__portrait {
+    position: relative;
+    z-index: 2;
+    justify-self: center;
+    width: 94vw;
+    max-width: 100%;
+    height: auto;
+    max-height: 92vh;
+    object-fit: contain;
+    margin-top: 2vh;
+    filter: drop-shadow(0 1.875rem 3.125rem rgba(23, 24, 26, 0.22));
+
+    @include tokens.up(tokens.$bp-sm) {
+      width: clamp(30rem, 67vw, 64.6875rem);
+      margin-top: 6vh;
+    }
+  }
+
+  &__bar {
+    position: absolute;
+    bottom: 2rem;
+    inset-inline: 0;
+    z-index: 3;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1.125rem;
+
+    @include tokens.down(tokens.$bp-sm) {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
+  &__pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    transform: translate(var(--mx, 0px), var(--my, 0px));
+    transition: transform 0.35s #{tokens.$ease-hover};
+  }
+
+  &__dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2500ms infinite;
+  }
+
+  &__meta {
+    text-align: right;
+    margin-inline: 1rem 0;
+
+    @include tokens.up(tokens.$bp-sm) {
+      margin-inline: 0 9.5rem;
+    }
+  }
+
+  &__meta-title {
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  &__meta-label {
+    margin-top: 0.4375rem;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0.55;
+  }
+}

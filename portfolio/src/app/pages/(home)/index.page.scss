@@ -1,0 +1,7 @@
+// spec: specs/02-home.md
+
+// ⚠ G1: page hosts are inline by UA default. The sections bring their own grid
+// frame — the page only stacks them.
+:host {
+  display: block;
+}
