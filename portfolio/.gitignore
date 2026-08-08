@@ -58,3 +58,7 @@ Thumbs.db
 
 # Environment files
 .env*
+
+# Wrangler: lokale Secrets fuer `wrangler pages dev` — darf NIE committet werden
+.dev.vars
+.wrangler/
