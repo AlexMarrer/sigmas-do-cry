@@ -17,6 +17,7 @@ Definition of done per item: matches the screenshot/prototype visually, works ke
 
 - [x] Accent-contrast strategy (⚠ E4) — DECIDED: two-tier accent. `--accent` (#C6402E) for fills/large text only; `--accent-text` (#B23A29 on light, #E05A44 in `.theme-dark`) for all accent text < ~19px. Tokens are in place — the per-component wiring is called out in each spec.
 - [x] Grid system → [grid.md](grid.md) — 3-column frame (`grid.wrapper` + placement mixins, ⚠ G1), breakpoints + `down()`, output-free token rule (⚠ G2). Adopt per section as views get built.
+- [x] Photo pipeline → [photos.md](photos.md) — DONE (2026-08-08): `npm run photos` (sharp) turns `photos/<trip>/` originals into AVIF variants under `public/images/gallery/` + `data/trips.generated.ts` (⚠ F3, F4). Storage decision: repo, no CDN — ~210 MB at the 600-photo worst case. Folder is empty and gitignored; the gallery still renders placeholder tones until the first trip lands.
 
 ## 2 · Shell components (everything depends on these visually)
 
@@ -33,13 +34,15 @@ Definition of done per item: matches the screenshot/prototype visually, works ke
 - [ ] Project detail page → [04-project-detail.md](04-project-detail.md) — slug input (⚠ C3), dynamic title (⚠ C5), `nextProject()` in data layer
 - [ ] About page → [05-about.md](05-about.md)
 - [ ] Gallery page, static tiles → [06-gallery.md](06-gallery.md) — masonry (⚠ D6), tiles as buttons (⚠ E1)
+- [ ] Gallery on real photos → [photos.md](photos.md) — rework `Trip` (slug/country/year/cover/captions), drop `TripShot`, tiles to `ngSrc` + custom image loader (⚠ F5), place filter. Needs a first trip in `photos/`.
 - [ ] Re-run `npm run build` — still 13 pages, spot-check `/work/velora/index.html` content
 
 ## 4 · Motion & interaction layer (order matters: service → simple → complex)
 
 - [x] MotionService — SSR-safe `reducedMotion` / `finePointer` (⚠ A1, E3); everything below consumes it (pulled ahead 2026-08-05 for the footer's magnetic CTA)
-- [ ] Scroll-reveal directive → [scroll-reveal.md](scroll-reveal.md) (⚠ A3) — then sprinkle `appScrollReveal` per the view specs
+- [x] Scroll-reveal directive → [scroll-reveal.md](scroll-reveal.md) (⚠ A3) — DONE (2026-08-05): directive + `styles/_reveal.scss` variants, wired on Home (intro grid, selected-work label row). Still to sprinkle per the view specs as views get built
 - [x] Magnetic directive → [magnetic.md](magnetic.md) (⚠ D3, B2) — DONE, wired: footer CTA + email pill. Still to wire as their views get built: hero pill, About pill, all-work pill, CV/gallery buttons, circle badge
+- [x] Hover-wipe directive → [hover-wipe.md](hover-wipe.md) — DONE (2026-08-06): directive + `styles/_hover-wipe.scss` mixin, wired on both `.btn` variants, footer CTA + email pill. Not on `.link--*` (colour-only) or the hero status pill. Addition, not in the README
 - [ ] Row expand animation → [03-work.md](03-work.md) § Hover behavior (⚠ D2, E1) — depends on ProjectHoverService wiring
 - [ ] Cursor-preview card → [cursor-preview.md](cursor-preview.md) (⚠ B1, B3) — depends on ProjectHoverService wiring
 - [x] Clock → [clock.md](clock.md) (⚠ A2) — independent, do anytime (done 2026-08-05 with the footer)
@@ -84,8 +87,11 @@ Definition of done per item: matches the screenshot/prototype visually, works ke
 | D3 | Magnetic writes `--mx/--my`, never `style.transform` | magnetic.md, 07-footer.md |
 | D4 | Sass `@use` only; tokens once; no `::ng-deep` | styles/, grid.md |
 | D8 | Nav mobile sheet stays a SIBLING of `.nav` (blend context) | 01-nav.md |
+| D9 | HISTORICAL (closed 2026-08-06). Symptom: nav frozen at the old width after a window drag (`innerWidth` 2329 vs `clientWidth` 1286) → overflow until reload. The original diagnosis ("fixed sizes against a stale ICB") was incomplete — the stale ICB was itself caused by the D10 scroll container. A JS cap (`--nav-max-width` from `documentElement.clientWidth`) compensated for the symptom; removed after D10 landed and drag-testing showed `innerWidth == clientWidth == scrollWidth` throughout | D10 |
+| D10 | `overflow: hidden` creates a SCROLL CONTAINER — a clipped 6000px marquee stays scrollable overflow area and was what froze the viewport's scrolling region, and with it the ICB (the real cause behind D9's mis-sized nav). Use `overflow: clip` for decorative clipping, with `hidden` as the preceding fallback declaration | 02-home.md, hero.scss |
 | G1 | Component host is the grid item → host needs `display: block` | grid.md |
 | G2 | `_tokens`/`_grid` must stay output-free (no CSS emission) | grid.md |
+| G4 | Placement mixins must out-specify `wrapper`'s `> *` default (emulated encapsulation makes it 0,3,0) — they emit a doubled class | grid.md |
 | G3 | Declarations before nested `@include down(…)` (Sass mixed-decls) | grid.md |
 | D5 | Weight 550 needs the variable font | _fonts.scss |
 | D6 | CSS-columns masonry: DOM order + reserved aspect boxes | 06-gallery.md |
@@ -96,3 +102,6 @@ Definition of done per item: matches the screenshot/prototype visually, works ke
 | E4 | RESOLVED: two-tier accent — small accent text uses `var(--accent-text)` | _tokens.scss |
 | F1 | NgOptimizedImage: priority hero, width/height, honest `sizes` | 02-home.md, 05-about.md |
 | F2 | 318KB cutout PNG is the LCP → AVIF/WebP-with-alpha | 02-home.md |
+| F3 | Gallery originals stay OUT of `public/` (Vite copies it verbatim) and out of git | photos.md, .gitignore |
+| F4 | `.rotate()` before resize, never `.withMetadata()` — orientation baked in, EXIF/GPS dropped | photos.md, scripts/photos.mjs |
+| F5 | `ngSrcset` needs `provideImageLoader`; the default noop loader ignores width | photos.md, app.config.ts |
