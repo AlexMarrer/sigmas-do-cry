@@ -1,21 +1,28 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouteMeta } from '@analogjs/router';
+import { ProjectRows } from '../../components/project-rows/project-rows';
+import { projects } from '../../data/projects';
+
+// Derived, never typed out: the design's "2021 → 2025" was true for the
+// placeholder set and silently goes stale the moment a project is added.
+const years = projects.map((project) => Number(project.year)).filter(Number.isFinite);
+const span = `${Math.min(...years)} → ${Math.max(...years)}`;
 
 export const routeMeta: RouteMeta = {
   title: 'Work — Alex Uscata',
-  meta: [
-    { name: 'description', content: 'Client & side projects — 2021 → 2025.' },
-  ],
+  meta: [{ name: 'description', content: `Client & side projects — ${span}.` }],
 };
 
-// TODO(spec: specs/03-work.md)
-// "Work⁽⁹⁾" title + <app-project-rows> with all 9 projects.
+// spec: specs/03-work.md § Work page
 @Component({
   selector: 'app-work-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  // TEMP: clears the fixed nav until the real section carries its own
-  // padding-top (spec: clamp(140px,18vw,220px)). Remove then — don't stack.
-  styles: `:host { display: block; padding-top: clamp(140px, 18vw, 220px); }`,
-  template: `<h1>Work — TODO(spec: specs/03-work.md)</h1>`,
+  imports: [ProjectRows],
+  templateUrl: './index.page.html',
+  styleUrls: ['./index.page.scss'],
 })
-export default class WorkPage {}
+export default class WorkPage {
+  protected readonly projects = projects;
+  protected readonly count = projects.length;
+  protected readonly span = span;
+}

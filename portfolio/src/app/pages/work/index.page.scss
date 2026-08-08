@@ -1,0 +1,53 @@
+// spec: specs/03-work.md
+@use "../../../styles/grid";
+
+// ⚠ G1: page hosts are inline by UA default.
+:host {
+  display: block;
+}
+
+.work {
+  @include grid.wrapper;
+  // Top padding also clears the fixed nav — this IS the spec value, nothing
+  // stacks on top of it.
+  padding-block: clamp(8.75rem, 18vw, 13.75rem) clamp(4.375rem, 9vw, 7.5rem);
+
+  &__title {
+    margin: 0;
+    font-size: clamp(3.75rem, 10vw, 9.375rem);
+    font-weight: 550;
+    letter-spacing: -0.035em;
+    line-height: 0.95;
+  }
+
+  // <sup> keeps its UA vertical-align: super — only size, colour and tracking
+  // are overridden.
+  &__count {
+    margin-left: 1rem;
+    font-size: 0.22em;
+    font-weight: 600;
+    letter-spacing: 0;
+    // ⚠ E4: .22em of this title is 13–33px, i.e. small text for most of the
+    // range — --accent-text, never --accent.
+    color: var(--accent-text);
+  }
+
+  &__label {
+    margin: 1.625rem 0 0;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    opacity: 0.55;
+  }
+
+  // ⚠ G1: this class sits on the <app-project-rows> HOST, which is the grid
+  // item — full-block has to target the host, not the div inside the component.
+  // The rows bleed edge to edge because each row line brings its own
+  // var(--gutter) padding (spec § Numbers); putting them in the content column
+  // instead would double the gutter.
+  &__rows {
+    @include grid.full-block;
+    margin-top: clamp(2.5rem, 6vw, 4.375rem);
+  }
+}

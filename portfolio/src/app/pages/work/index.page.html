@@ -1,0 +1,9 @@
+<!-- spec: specs/03-work.md § Work page -->
+<section class="work">
+  <div class="work__head">
+    <h1 class="work__title">Work<sup class="work__count">({{ count }})</sup></h1>
+    <p class="work__label">Client &amp; side projects — {{ span }}</p>
+  </div>
+
+  <app-project-rows class="work__rows" [projects]="projects" />
+</section>

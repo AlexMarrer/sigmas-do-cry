@@ -1,3 +1,219 @@
 // spec: specs/03-work.md § Project rows
+@use "../../../styles/hover-wipe";
+@use "../../../styles/tokens";
+
 .project-rows {
+  border-bottom: 1px solid var(--hairline);
+
+  &__row {
+    // ⚠ A4: the containing block for the stretched title link. Without it the
+    // ::after spans the nearest positioned ancestor instead of the row.
+    position: relative;
+    border-top: 1px solid var(--hairline);
+    transition: background-color 0.45s ease;
+  }
+
+  &__line {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.875rem, 2.6vw, 2.25rem);
+    // The rows are laid out full-bleed and carry the frame's gutter themselves
+    // (the hairlines have to reach the screen edges).
+    padding: clamp(1.375rem, 3vw, 2.125rem) var(--gutter);
+
+    @include tokens.down(tokens.$bp-sm) {
+      flex-wrap: wrap;
+      row-gap: 0.25rem;
+    }
+  }
+
+  &__num {
+    min-width: 1.625rem;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    // ⚠ E4: 13px accent text — --accent-text, never --accent.
+    color: var(--accent-text);
+  }
+
+  &__title {
+    font-size: tokens.$fs-row-title;
+    font-weight: 550;
+    letter-spacing: tokens.$ls-title;
+    line-height: 1.02;
+    color: inherit;
+    text-decoration: none;
+
+    // ⚠ A4: this is what makes the whole row navigate. The row itself must
+    // never become an <a> — it contains the pill links, and a nested anchor is
+    // re-parented when the prerendered HTML is parsed back, which breaks
+    // hydration (NG0500). One real, crawlable link, no click handlers.
+    &::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 0.25rem;
+    }
+
+    @include tokens.down(tokens.$bp-sm) {
+      font-size: clamp(1.375rem, 7vw, 1.625rem);
+    }
+  }
+
+  &__spacer {
+    flex: 1;
+  }
+
+  &__category {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    opacity: 0.5;
+
+    @include tokens.down(tokens.$bp-sm) {
+      display: none;
+    }
+  }
+
+  &__year {
+    font-size: 0.875rem;
+    font-variant-numeric: tabular-nums;
+    opacity: 0.6;
+  }
+
+  // ⚠ D2: 0fr → 1fr, never max-height. A fixed max-height clips wrapped content
+  // on narrow screens and closes with a visible lag once the real height is
+  // shorter than the cap.
+  &__detail {
+    display: grid;
+    // ⚠ minmax(0, …), NOT a bare 0fr/1fr — measured: a bare `0fr` is
+    // `minmax(auto, 0fr)`, and the auto minimum still includes the inner's
+    // PADDING. min-height/overflow on the item only zero out its content, so
+    // the closed row kept a 32px band of dead space (2px + 30px). Pinning the
+    // track minimum to 0 collapses it properly; the padded item then overflows
+    // and is clipped here.
+    grid-template-rows: minmax(0, 0fr);
+    overflow: hidden;
+    // Closing timing — no delays (spec § Expand timing). The opening timings
+    // live on the --open rules below, which is the whole point of splitting it.
+    transition: grid-template-rows 0.5s tokens.$ease-expand;
+  }
+
+  &__detail-inner {
+    // ⚠ D2: both load-bearing. Without min-height: 0 the row refuses to shrink
+    // below its content, and the 0fr state does nothing at all.
+    min-height: 0;
+    overflow: hidden;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    // Left padding aligns the description under the TITLE: gutter + the number
+    // column + the line's gap.
+    padding: 0.125rem var(--gutter) clamp(1.375rem, 3vw, 1.875rem)
+      calc(var(--gutter) + 1.625rem + clamp(0.875rem, 2.6vw, 2.25rem));
+
+    opacity: 0;
+    transform: translateY(0.75rem);
+    transition:
+      opacity 0.3s ease,
+      transform 0.4s tokens.$ease-hover;
+
+    @include tokens.down(tokens.$bp-sm) {
+      // The title wraps to its own line down here, so the hanging indent would
+      // point at nothing.
+      padding-left: var(--gutter);
+    }
+  }
+
+  &__description {
+    margin: 0;
+    font-size: 1rem;
+    max-width: 32.5rem;
+    opacity: 0.72;
+  }
+
+  &__links {
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.625rem;
+  }
+
+  &__link {
+    // ⚠ A4: lift above the stretched link's ::after — without this the pills
+    // sit underneath it and are simply not clickable. This also satisfies the
+    // wipe mixin's requirement that the host is already positioned; the mixin's
+    // own `isolation: isolate` keeps its z-index:-1 disc scoped to the pill
+    // instead of sinking behind the row.
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5625rem 1.125rem;
+    border: 1px solid var(--hairline-strong);
+    border-radius: tokens.$r-pill;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    line-height: 1;
+    color: inherit;
+    text-decoration: none;
+    // Same directional fill every other button in the project wears
+    // (specs/hover-wipe.md). [appHoverWipe] on the anchor supplies the entry
+    // point; without it the mixin still fills, just from the centre.
+    @include hover-wipe.wipe(var(--ink));
+    // ⚠ No `background` in the :hover below — the mixin's disc grows in $fill,
+    // and a host background flipping instantly would hide it entirely. The
+    // colour delay lets the fill reach the label before it inverts.
+    transition:
+      color 0.25s tokens.$ease-hover 0.1s,
+      border-color 0.25s tokens.$ease-hover;
+
+    &:hover,
+    &:focus-visible {
+      border-color: var(--ink);
+      color: var(--bg);
+    }
+  }
+
+  // A label, not a link — the row itself already navigates there.
+  // ⚠ E4: 13px accent text.
+  &__case {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--accent-text);
+  }
+
+  // ── Expanded state ─────────────────────────────────────────────────────────
+  // ⚠ E1: gated on (hover: hover) and nowhere else. The component sets --open
+  // on focusin too, so a keyboard user on a pointer device gets the expansion;
+  // on touch the class still lands but nothing opens — the tap navigates. This
+  // gate must NOT move into the TS, or a touch laptop loses keyboard parity.
+  @media (hover: hover) {
+    &__row--open {
+      background-color: color-mix(in srgb, var(--ink) 5%, transparent);
+    }
+
+    &__row--open &__detail {
+      grid-template-rows: minmax(0, 1fr);
+      transition: grid-template-rows 0.65s tokens.$ease-expand;
+    }
+
+    &__row--open &__detail-inner {
+      opacity: 1;
+      transform: none;
+      // The delay lets the row finish opening before the content fades in —
+      // without it the text slides through its own clipping edge.
+      transition:
+        opacity 0.5s ease 0.12s,
+        transform 0.6s tokens.$ease-hover 0.12s;
+    }
+  }
 }
