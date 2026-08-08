@@ -1,0 +1,153 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// Reusable button + link system — primary / secondary, each with hover + active.
+//
+// Buttons are theme-INDEPENDENT on purpose: --bg/--ink flip inside a
+// .theme-dark section, but a primary/secondary button must look identical in
+// every section — so the .btn variants ride fixed brand tokens (accent / paper
+// / ink), not theme vars. The text links below DO follow the theme (they sit
+// inline in flipping copy), via var(--accent-text)/inherit.
+//
+//   .btn.btn--primary    accent-filled at rest → white/ink on hover
+//   .btn.btn--secondary  white/ink at rest     → accent-filled on hover
+//   .link--primary       accent text at rest   → ink on hover
+//   .link--secondary     ink text at rest      → accent on hover
+//
+// Both .btn variants wipe their hover colour in directionally (specs/hover-wipe.md):
+// the colour lives on a ::before fill layer, so the variants' :hover rules
+// carry colour/border only — never `background`.
+// ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+@use "sass:color";
+@use "hover-wipe";
+@use "tokens";
+
+// Fixed brand colours for buttons (never flipped by the section theme).
+$btn-white: tokens.$bg-light;
+$btn-black: tokens.$ink;
+$btn-accent: tokens.$accent;
+$btn-accent-pressed: color.adjust(tokens.$accent, $lightness: -7%);
+$btn-white-pressed: color.mix(tokens.$ink, tokens.$bg-light, 12%);
+
+.btn {
+  // Containing block for the wipe layer — the mixin can't set this itself
+  // (.footer__cta is absolute and would break).
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.75rem;
+  border: 1px solid transparent;
+  border-radius: tokens.$r-pill;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  // D3: compose the magnetic offset — hosts with appMagnetic feed --mx/--my;
+  // when absent they fall back to 0, so non-magnetic buttons are unaffected.
+  transform: translate(var(--mx, 0px), var(--my, 0px));
+  // The colour delay lets the fill reach the centred label before it flips —
+  // without it the text inverts while the old background is still under it.
+  // No background/box-shadow here: both live on the ::before now.
+  transition:
+    color 0.25s tokens.$ease-hover 0.1s,
+    border-color 0.25s tokens.$ease-hover,
+    transform 0.35s tokens.$ease-hover;
+
+  &:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+}
+
+// Primary — accent-filled at rest, inverts to white/ink on hover.
+.btn--primary {
+  background: $btn-accent;
+  color: #fff;
+  border-color: $btn-accent;
+  @include hover-wipe.wipe($btn-white, $pressed-shadow: inset 0 0.1875rem 0.5rem rgba(0, 0, 0, 0.3));
+
+  // :focus-visible flips the colours too — the mixin fills on focus, and white
+  // on white would swallow the label.
+  &:hover,
+  &:focus-visible {
+    color: $btn-black;
+    border-color: $btn-black;
+  }
+
+  &:active {
+    color: $btn-black;
+    border-color: $btn-black;
+    transform: translate(var(--mx, 0px), var(--my, 0px)) scale(0.98);
+  }
+
+  // Pressed: dimmed white (the "graulich" look) — on the fill layer, because
+  // the host's own background paints underneath it. The inner shadow is the
+  // mixin's $pressed-shadow layer.
+  &:active::before {
+    background: $btn-white-pressed;
+  }
+}
+
+// Secondary — white/ink at rest, accent-filled on hover (the inverse journey).
+.btn--secondary {
+  background: $btn-white;
+  color: $btn-black;
+  border-color: tokens.$hairline-on-light-strong;
+  @include hover-wipe.wipe($btn-accent, $pressed-shadow: inset 0 0.1875rem 0.5rem rgba(0, 0, 0, 0.25));
+
+  &:hover,
+  &:focus-visible {
+    color: #fff;
+    border-color: $btn-accent;
+  }
+
+  &:active {
+    color: #fff;
+    border-color: $btn-accent-pressed;
+    transform: translate(var(--mx, 0px), var(--my, 0px)) scale(0.98);
+  }
+
+  // Pressed: slightly darker accent — same reason it sits on ::before.
+  &:active::before {
+    background: $btn-accent-pressed;
+  }
+}
+
+// ── Text links — same primary/secondary idea, colour only ────────────────────
+.link {
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 0.2s tokens.$ease-hover;
+}
+
+// Primary link — accent at rest (contrast-safe small red), ink on hover.
+.link--primary {
+  color: var(--accent-text);
+  text-decoration: underline;
+  text-underline-offset: 0.14em;
+
+  &:hover {
+    color: var(--ink);
+  }
+
+  &:active {
+    color: color-mix(in srgb, var(--accent-text), #000 16%);
+  }
+}
+
+// Secondary link — inherits ink at rest, turns accent on hover.
+.link--secondary {
+  color: inherit;
+
+  &:hover {
+    color: var(--accent-text);
+    text-decoration: underline;
+    text-underline-offset: 0.14em;
+  }
+
+  &:active {
+    color: color-mix(in srgb, var(--accent-text), #000 16%);
+  }
+}
