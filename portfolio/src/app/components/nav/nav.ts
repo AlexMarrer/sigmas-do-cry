@@ -1,13 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  DOCUMENT,
-  ElementRef,
-  effect,
-  inject,
-  signal,
-  viewChild,
-} from "@angular/core";
+import { ChangeDetectionStrategy, Component, DOCUMENT, ElementRef, effect, inject, signal, viewChild } from "@angular/core";
 import { RouterLink, RouterLinkActive } from "@angular/router";
 
 @Component({

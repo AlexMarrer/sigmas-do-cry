@@ -3,8 +3,8 @@
 // NO ancestor makes a stacking context — that now includes the <app-nav> host
 // (keep :host free of transform/filter/opacity<1/isolation/will-change) AND
 // app-root (keep <app-nav> a direct, unwrapped child there).
-@use '../../../styles/grid';
-@use '../../../styles/tokens';
+@use "../../../styles/grid";
+@use "../../../styles/tokens";
 
 .nav {
   position: fixed;
@@ -33,17 +33,17 @@
   }
 
   &__pills {
-    display: flex;
+    display: none; // mobile: burger + .nav-menu take over
 
-    @include tokens.down(tokens.$bp-sm) {
-      display: none; // burger + .nav-menu take over
+    @include tokens.up(tokens.$bp-sm) {
+      display: flex;
     }
   }
 
   // ≤768px replacement for the pills (spec deviation 2026-08-05: the design
   // shrank the pills instead — user opted for a burger + full-screen sheet).
   &__burger {
-    display: none;
+    display: inline-flex; // mobile default; hidden from $bp-sm up
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -57,8 +57,8 @@
     cursor: pointer;
     transition: background 0.25s;
 
-    @include tokens.down(tokens.$bp-sm) {
-      display: inline-flex;
+    @include tokens.up(tokens.$bp-sm) {
+      display: none;
     }
 
     &:hover,
@@ -101,6 +101,10 @@
       background: rgba(255, 255, 255, 0.16);
     }
 
+    &:active {
+      background: rgba(255, 255, 255, 0.26);
+    }
+
     // Only the ONE active dot carries the name, so on route change the browser
     // morphs it from the old pill to the new one. Never put this on .nav__dot
     // itself — 4 elements sharing a name aborts the transition. Tuning +
@@ -133,15 +137,15 @@
   position: fixed;
   inset: 0;
   z-index: 50;
-  display: none;
+  display: flex; // mobile: shown when rendered (only exists while menuOpen)
   flex-direction: column;
   justify-content: center;
   gap: 0.75rem;
   padding: var(--gutter);
   animation: nav-menu-in 0.3s tokens.$ease-reveal;
 
-  @include tokens.down(tokens.$bp-sm) {
-    display: flex;
+  @include tokens.up(tokens.$bp-sm) {
+    display: none;
   }
 
   &__link {
@@ -149,6 +153,16 @@
     font-weight: 500;
     letter-spacing: tokens.$ls-title;
     line-height: 1.2;
+    transition: color 0.2s tokens.$ease-hover;
+
+    &:hover,
+    &:focus-visible {
+      color: var(--accent-text);
+    }
+
+    &:active {
+      color: color-mix(in srgb, var(--accent-text), #000 16%);
+    }
 
     &--active {
       color: var(--accent-text);
@@ -162,4 +176,3 @@
     transform: translateY(0.5rem);
   }
 }
-
