@@ -1,3 +1,64 @@
 // spec: specs/cursor-preview.md
+@use "../../../styles/tokens";
+
+// ⚠ G1: the host sits last in the app shell, after the footer. Inline (the UA
+// default) it would open an empty line box there and add a few px to the very
+// bottom of every page. Block + an out-of-flow child measures zero.
+:host {
+  display: block;
+}
+
 .cursor-preview {
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  // Above every section, below the nav's blend-mode layer (60).
+  z-index: 70;
+  // ⚠ Load-bearing, not cosmetic: without it the card intercepts the pointer
+  // over the row it is sitting on, the row loses hover, the card hides, the row
+  // regains hover — a flicker loop at frame rate.
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: min(24vw, 20.625rem);
+  aspect-ratio: 4 / 3;
+  padding-inline: 1.25rem;
+  border-radius: tokens.$r-card-md;
+  box-shadow: 0 1.875rem 3.75rem rgb(0 0 0 / 18%);
+  text-align: center;
+  opacity: 0;
+  // ⚠ `scale` as its own property, NOT inside a transform: the component writes
+  // `style.transform` every frame and would clobber a scale packed in there —
+  // exactly the bug the hero entrance is warned about. The two compose.
+  scale: 0.8;
+  will-change: transform, opacity;
+  transition:
+    opacity 0.28s ease,
+    scale 0.38s tokens.$ease-hover;
+
+  &--visible {
+    opacity: 1;
+    scale: 1;
+  }
+
+  // TODO: white on the hue gradient is safe (it is always the dark end of the
+  // ramp). Real cover images are not — once `cover` paths land, either put a
+  // scrim behind the text or commit to dark-enough crops.
+  &__title {
+    font-size: 1.625rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: rgb(255 255 255 / 95%);
+  }
+
+  &__category {
+    margin-top: 0.5rem;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgb(255 255 255 / 70%);
+  }
 }

@@ -1,3 +1,12 @@
-<!-- TODO(spec: specs/cursor-preview.md) -->
-<div class="cursor-preview">
+<!-- spec: specs/cursor-preview.md — purely decorative echo of the hovered row.
+     aria-hidden: the row itself carries the accessible name and the link, and a
+     keyboard user never produces a cursor position to follow. -->
+<div
+  class="cursor-preview"
+  [class.cursor-preview--visible]="visible()"
+  [style.background]="background()"
+  aria-hidden="true"
+>
+  <span class="cursor-preview__title">{{ title() }}</span>
+  <span class="cursor-preview__category">{{ category() }}</span>
 </div>
