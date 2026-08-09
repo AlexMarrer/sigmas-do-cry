@@ -2,6 +2,7 @@
 @use "../../../styles/grid";
 @use "../../../styles/tokens";
 
+
 // ⚠ G1: page hosts are inline by UA default.
 :host {
   display: block;
@@ -35,7 +36,82 @@
     opacity: 0.65;
   }
 
+  &__filters {
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+    margin-top: clamp(2.5rem, 5vw, 3.5rem);
+    border-top: 1px solid var(--hairline);
+    padding-top: 1.375rem;
+  }
+
+  &__filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.625rem 1rem;
+  }
+
+  &__filter-label {
+    min-width: 2.75rem;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    opacity: 0.5;
+  }
+
+  &__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  &__chip {
+    border: 1px solid var(--hairline-strong);
+    border-radius: tokens.$r-pill;
+    padding: 0.4375rem 0.9375rem;
+    background: none;
+    color: inherit;
+    font: inherit;
+    font-size: 0.8125rem;
+    font-weight: 550;
+    line-height: 1;
+    cursor: pointer;
+    transition:
+      color 0.2s tokens.$ease-hover,
+      background 0.2s tokens.$ease-hover,
+      border-color 0.2s tokens.$ease-hover;
+
+    &:hover {
+      border-color: var(--ink);
+    }
+
+    // ⚠ E1: aria-pressed is the state, the outline is the focus ring — the
+    // filled --on look is neither.
+    &:focus-visible {
+      outline: 2px solid var(--accent-text);
+      outline-offset: 3px;
+    }
+
+    &--on {
+      border-color: var(--ink);
+      background: var(--ink);
+      color: var(--bg);
+    }
+  }
+
+  &__count {
+    font-size: 0.75rem;
+    font-variant-numeric: tabular-nums;
+    opacity: 0.5;
+  }
+
+  // The `cqw` reference for the grid below: the page sizes rows and gaps
+  // against the masonry's own width, so the layout keeps its proportions at
+  // whatever width the prerendered HTML lands on.
   &__trip {
+    container-type: inline-size;
     margin-top: clamp(4.375rem, 9vw, 6.875rem);
   }
 
@@ -71,22 +147,32 @@
     opacity: 0.5;
   }
 
-  &__masonry {
+  // Every tile is placed by the packer, so the grid itself only declares the
+  // frame; template-columns, auto-rows and column-gap are bound from the page.
+  // ⚠ row-gap stays 0 — the vertical gap is rounded INTO each tile's row span,
+  // or the rounding and the gap would fight over the same pixels.
+  &__photos {
+    display: grid;
+    row-gap: 0;
     margin-top: 1.75rem;
-    column-width: 20rem;
-    column-gap: 1.125rem;
+  }
+
+  // Reveal host only — separate from the tile because .reveal--in and the hover
+  // scale would both own `transform` (see specs/scroll-reveal.md). `start`
+  // keeps it at its own height inside the slightly taller row span.
+  &__cell {
+    align-self: start;
+    min-width: 0;
   }
 
   &__tile {
     display: block;
     position: relative;
     width: 100%;
-    margin-bottom: 1.125rem;
     border: 0;
     border-radius: tokens.$r-card;
     padding: 0;
     overflow: hidden;
-    break-inside: avoid;
     cursor: pointer;
     transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
 
@@ -129,9 +215,20 @@
     font-variant-numeric: tabular-nums;
   }
 
+  &__more {
+    margin-top: 1.75rem;
+  }
+
   &__empty {
     margin-top: 1.75rem;
     font-size: 0.875rem;
     opacity: 0.55;
+  }
+
+  &__clear {
+    border: 0;
+    padding: 0;
+    background: none;
+    font: inherit;
   }
 }

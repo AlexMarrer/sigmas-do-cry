@@ -89,7 +89,9 @@ That requires a custom image loader (⚠ F5). There is **no `provideImageLoader`
 
 Place is a property of the **trip**, not the photo (`Trip.country`). A place filter therefore hides whole trip groups and the grouped masonry layout survives untouched; per-photo places would force a second, flat layout for a distinction not worth its cost at 20 trips.
 
-Filter state is page-local signals — `place`, `order`, and a `visible` computed — matching the lightbox-state decision in [06-gallery.md](06-gallery.md). Mirror it to `?place=…` so a filtered view is shareable, with `replaceUrl: true` so chip clicks don't stack up in the back history.
+Filter state is page-local signals, matching the lightbox-state decision in [06-gallery.md](06-gallery.md). Mirror it to the query params so a filtered view is shareable, without stacking up the back history.
+
+*Built 2026-08-09, with two amendments to the above.* The second axis is **`year`, not `order`**: trips already sort newest-first and 3–8 of them make a sort toggle a control with nothing to do, while the year is the other thing a trip is remembered by. And the mirror is `Location.replaceState`, not `router.navigate({replaceUrl: true})` — a query-param change is not a navigation, and routing it fires a view transition per chip click. The scale cap below arrived in the same pass as a 9-tile cap per trip, which is what keeps a 46-photo trip from owning the page before any of this splits.
 
 **The single gallery page does not scale to the full trip count.** At 20 trips it carries 400+ tiles; lazy loading keeps the initial hit small but a full scroll pulls ~28 MB, and the chip row passes readable width somewhere around 8 countries. It stays comfortable to roughly **6–8 trips / ~120 photos**. Past that, split it the way `/work` already splits: `/gallery` becomes one cover card per trip (that's what `Trip.cover` is for) plus the filter, and `/gallery/[slug]` renders one trip's photos — enumerated for prerender from the trip data exactly like the project slugs (⚠ C1). Keying the photo data by trip slug from day one is what keeps that split a layout change instead of a data migration.
 

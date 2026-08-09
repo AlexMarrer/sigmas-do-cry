@@ -8,44 +8,147 @@
     </p>
   </header>
 
-  @for (trip of trips; track trip.slug; let t = $index) {
+  <div class="gallery__filters reveal--fade-in-up" appScrollReveal #widthProbe>
+    <div class="gallery__filter-row">
+      <span class="gallery__filter-label" id="gallery-filter-place">Place</span>
+      <div class="gallery__chips" role="group" aria-labelledby="gallery-filter-place">
+        <button
+          type="button"
+          class="gallery__chip"
+          [class.gallery__chip--on]="place() === null"
+          [attr.aria-pressed]="place() === null"
+          (click)="selectPlace(null)">
+          All
+        </button>
+        @for (option of places; track option) {
+          <button
+            type="button"
+            class="gallery__chip"
+            [class.gallery__chip--on]="place() === option"
+            [attr.aria-pressed]="place() === option"
+            (click)="selectPlace(option)">
+            {{ option }}
+          </button>
+        }
+      </div>
+    </div>
+
+    <div class="gallery__filter-row">
+      <span class="gallery__filter-label" id="gallery-filter-year">Year</span>
+      <div class="gallery__chips" role="group" aria-labelledby="gallery-filter-year">
+        <button
+          type="button"
+          class="gallery__chip"
+          [class.gallery__chip--on]="year() === null"
+          [attr.aria-pressed]="year() === null"
+          (click)="selectYear(null)">
+          All
+        </button>
+        @for (option of years; track option) {
+          <button
+            type="button"
+            class="gallery__chip"
+            [class.gallery__chip--on]="year() === option"
+            [attr.aria-pressed]="year() === option"
+            (click)="selectYear(option)">
+            {{ option }}
+          </button>
+        }
+      </div>
+    </div>
+
+    <p class="gallery__count" aria-live="polite">{{ summary() }}</p>
+  </div>
+
+  @for (group of groups(); track group.trip.slug; let t = $index) {
     <section class="gallery__trip">
       <div class="gallery__trip-head reveal--fade-in-up" appScrollReveal>
         <span class="gallery__trip-idx">{{ pad(t + 1) }}</span>
-        <h2 class="gallery__trip-name">{{ trip.name }}</h2>
-        <span class="gallery__trip-meta">{{ trip.meta }}</span>
+        <h2 class="gallery__trip-name">{{ group.trip.name }}</h2>
+        <span class="gallery__trip-meta">{{ group.trip.meta }}</span>
       </div>
 
-      <!-- ⚠ D6: columns run top-to-bottom per column, so DOM order ≠ visual order. -->
-      <div class="gallery__masonry">
-        @for (photo of trip.photos; track photo.id; let i = $index) {
-          <!-- ⚠ E1: a <button>, not a clickable div. -->
-          <button
-            type="button"
-            class="gallery__tile"
-            [style.aspectRatio]="photo.width + ' / ' + photo.height"
-            [style.backgroundColor]="photo.tone"
-            (click)="lightbox.set({ trip: t, index: i })">
-            <img
-              class="gallery__img"
-              [ngSrc]="photoSrc(trip, photo)"
-              [ngSrcset]="photo.widths.join('w, ') + 'w'"
-              [width]="photo.width"
-              [height]="photo.height"
-              sizes="(max-width: 660px) 100vw, (max-width: 1080px) 46vw, min(31vw, 460px)"
-              [alt]="captionFor(trip, photo)" />
-            <span class="gallery__caption">{{ captionFor(trip, photo) }}</span>
-            <span class="gallery__num" aria-hidden="true">{{ pad(i + 1) }}</span>
-          </button>
-        } @empty {
-          <p class="gallery__empty">
-            Nothing encoded yet — drop originals in <code>photos/{{ trip.slug }}/</code>
-            and run <code>npm run photos</code>.
-          </p>
-        }
-      </div>
+      @if (group.trip.photos.length > 0) {
+        <!-- ⚠ D6: columns still run top-to-bottom, so DOM order ≠ visual order —
+             but the columns are ours now, not multicol's (see `distribute`). -->
+        <div
+          class="gallery__photos"
+          [id]="'photos-' + group.trip.slug"
+          [style.gridTemplateColumns]="'repeat(' + grid().columns + ', 1fr)'"
+          [style.gridAutoRows]="grid().unit + 'cqw'"
+          [style.columnGap]="grid().gap + 'cqw'">
+          <!-- ⚠ The span is part of the key on purpose: `sizes` sits in
+               NgOptimizedImage's post-init guard, so a tile that flips between
+               one and two columns has to be re-created. Mutating it throws
+               NG02953 mid-update and every later tile keeps a stale placement. -->
+          @for (tile of group.tiles; track tile.photo.id + tile.columnSpan) {
+            <!-- The reveal owns `transform`, the tile's hover scale owns it too —
+                 so they sit on different elements. Stagger by column, left to
+                 right: tiles at the same height enter together. Past the cap a
+                 tile can only exist because "Show all" was clicked, so it
+                 animates even when it lands in view (⚠ A3). -->
+            <div
+              class="gallery__cell reveal--fade-in-up"
+              appScrollReveal
+              [revealDelay]="(tile.column - 1) * 80"
+              [revealAlways]="tile.index >= previewCount"
+              [style.gridColumn]="tile.column + ' / span ' + tile.columnSpan"
+              [style.gridRow]="tile.row + ' / span ' + tile.rowSpan">
+              <!-- ⚠ E1: a <button>, not a clickable div. -->
+              <button
+                type="button"
+                class="gallery__tile"
+                [style.aspectRatio]="tile.photo.width + ' / ' + tile.photo.height"
+                [style.backgroundColor]="tile.photo.tone"
+                (click)="lightbox.set({ trip: group.trip.slug, index: tile.index })">
+                <img
+                  class="gallery__img"
+                  [ngSrc]="photoSrc(group.trip, tile.photo)"
+                  [ngSrcset]="tile.photo.widths.join('w, ') + 'w'"
+                  [width]="tile.photo.width"
+                  [height]="tile.photo.height"
+                  [sizes]="sizesFor(tile)"
+                  [alt]="captionFor(group.trip, tile.photo)" />
+                <span class="gallery__caption">{{ captionFor(group.trip, tile.photo) }}</span>
+                <span class="gallery__num" aria-hidden="true">{{ pad(tile.index + 1) }}</span>
+              </button>
+            </div>
+          }
+        </div>
+      } @else {
+        <p class="gallery__empty">
+          Nothing encoded yet — drop originals in
+          <code>photos/{{ group.trip.slug }}/</code> and run <code>npm run photos</code>.
+        </p>
+      }
+
+      @if (group.hidden > 0) {
+        <button
+          type="button"
+          class="gallery__more btn btn--secondary"
+          [attr.aria-expanded]="group.open"
+          [attr.aria-controls]="'photos-' + group.trip.slug"
+          (click)="toggleTrip(group.trip.slug)"
+          appHoverWipe>
+          @if (group.open) {
+            Show fewer
+          } @else {
+            Show all {{ group.trip.photos.length }} photos
+          }
+        </button>
+      }
     </section>
   } @empty {
-    <p class="gallery__empty">No trips in <code>src/app/data/trips.ts</code> yet.</p>
+    @if (filtered()) {
+      <p class="gallery__empty">
+        No trips here yet —
+        <button type="button" class="gallery__clear link link--primary" (click)="clearFilters()">
+          clear the filters
+        </button>
+        to see all of them.
+      </p>
+    } @else {
+      <p class="gallery__empty">No trips in <code>src/app/data/trips.ts</code> yet.</p>
+    }
   }
 </section>
