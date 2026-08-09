@@ -36,10 +36,11 @@ yarn-error.log
 !.vscode/extensions.json
 .history/*
 
-# Gallery originals — `npm run photos` turns these into the AVIF derivatives
-# under public/images/gallery/, and only those get committed. This folder is a
-# staging area, NOT a backup: keep your masters somewhere that survives a clone.
+# Image originals — `npm run photos` turns these into the AVIF derivatives under
+# public/images/, and only those get committed. Staging areas, NOT backups: keep
+# your masters somewhere that survives a clone.
 /photos
+/project-images
 
 # Miscellaneous
 /.angular/cache

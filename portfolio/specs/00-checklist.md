@@ -17,7 +17,8 @@ Definition of done per item: matches the screenshot/prototype visually, works ke
 
 - [x] Accent-contrast strategy (⚠ E4) — DECIDED: two-tier accent. `--accent` (#C6402E) for fills/large text only; `--accent-text` (#B23A29 on light, #E05A44 in `.theme-dark`) for all accent text < ~19px. Tokens are in place — the per-component wiring is called out in each spec.
 - [x] Grid system → [grid.md](grid.md) — 3-column frame (`grid.wrapper` + placement mixins, ⚠ G1), breakpoints + `down()`, output-free token rule (⚠ G2). Adopt per section as views get built.
-- [x] Photo pipeline → [photos.md](photos.md) — DONE (2026-08-08): `npm run photos` (sharp) turns `photos/<trip>/` originals into AVIF variants under `public/images/gallery/` + `data/trips.generated.ts` (⚠ F3, F4). Storage decision: repo, no CDN — ~210 MB at the 600-photo worst case. Folder is empty and gitignored; the gallery still renders placeholder tones until the first trip lands.
+- [x] Image pipeline → [photos.md](photos.md) — DONE (2026-08-08): `npm run photos` (sharp), two passes over one encoder (⚠ F3, F4). Gallery: `photos/<trip>/` → `public/images/gallery/` + `trips.generated.ts`. Projects: `project-images/<slug>/` → `public/images/project/` + `projects.generated.ts`, `cover.*` reserved, rest are shots in filename order. `Project.cover` removed — the folder name is the only link. Storage: repo, no CDN, ~187 KB/photo measured.
+- [ ] Project images through the same pipeline → [photos.md](photos.md) — second collection: `photos/work/<slug>/cover.png` + `01-*.png` → `public/images/project/<slug>/` + `data/shots.generated.ts`. Config-driven collections instead of a second script; widths `[700, 1400, 2100]` off the 1400px content width, filename ordering, `cover` reserved (⚠ F6, F7). Existing trips move to `photos/gallery/<slug>/` (local `mv`, orphans nothing); the five committed `cover.png` files need a hand-written `git rm` afterwards.
 
 ## 2 · Shell components (everything depends on these visually)
 
@@ -31,7 +32,7 @@ Definition of done per item: matches the screenshot/prototype visually, works ke
 - [ ] Project rows component, static → [03-work.md](03-work.md) — stretched-link rows (⚠ A4), no expand yet; used by Home (4 featured) + Work (9)
 - [ ] Home selected-work section → [02-home.md](02-home.md) — depends on project rows
 - [ ] Work page → [03-work.md](03-work.md)
-- [ ] Project detail page → [04-project-detail.md](04-project-detail.md) — slug input (⚠ C3), dynamic title (⚠ C5), `nextProject()` in data layer
+- [ ] Project detail page → [04-project-detail.md](04-project-detail.md) — slug input (⚠ C3), dynamic title (⚠ C5), `nextProject()` in data layer. Cover: `coverBackground(project, 1400)`. Shots: `projectShots(project)` when non-empty, `Project.shots` labels otherwise — rendering them via `ngSrc` needs a `project/` branch in the image loader (⚠ F5), it only knows gallery srcs today.
 - [ ] About page → [05-about.md](05-about.md)
 - [ ] Gallery page, static tiles → [06-gallery.md](06-gallery.md) — masonry (⚠ D6), tiles as buttons (⚠ E1)
 - [x] Gallery data layer → [photos.md](photos.md) — DONE (2026-08-08): `Trip` reworked (slug/name/country/year + optional cover/captions), `TripShot` dropped, `data/gallery.ts` joins the hand-written and generated halves (`galleryTrips`, `captionFor`, `photoSrc`). First real trip encoded: `korea-2025`, 46 photos, 8.4 MB.
@@ -107,3 +108,5 @@ Definition of done per item: matches the screenshot/prototype visually, works ke
 | F3 | Gallery originals stay OUT of `public/` (Vite copies it verbatim) and out of git | photos.md, .gitignore |
 | F4 | `.rotate()` before resize, never `.withMetadata()` — orientation baked in, EXIF/GPS dropped | photos.md, scripts/photos.mjs |
 | F5 | `ngSrcset` needs `provideImageLoader`; the default noop loader ignores width | photos.md, app.config.ts |
+| F6 | Prune guard is per collection — never widen it to `public/images/` | photos.md, scripts/photos.mjs |
+| F7 | Quality 55 is a photo setting; screenshots ring — per-collection quality, `--force` to re-encode | photos.md, scripts/photos.mjs |

@@ -25,4 +25,16 @@ export const trips: Trip[] = [
     country: "South Korea",
     year: 2025,
   },
+  {
+    slug: "amsterdam-2026",
+    name: "Amsterdam",
+    country: "Netherlands",
+    year: 2026,
+  },
+  {
+    slug: "london-2026",
+    name: "London",
+    country: "United Kingdom",
+    year: 2026,
+  },
 ];

@@ -8,12 +8,17 @@ Statically prerendered portfolio on [Analog](https://analogjs.org/) (Angular 22,
 npm run dev      # dev server → http://localhost:5173
 npm run build    # SSG build → dist/analog/public (must contain 13 index.html)
 npm test         # vitest
-npm run photos   # gallery photos: photos/<trip>/ → AVIF + manifest (see PHOTOS.md)
+npm run photos   # images: originals → AVIF variants + manifests (see PHOTOS.md)
 ```
 
-## Gallery photos
+## Images
 
-Originals go in `photos/<trip-slug>/` (gitignored); `npm run photos` encodes the AVIF variants into `public/images/gallery/` and regenerates `src/app/data/trips.generated.ts`. Step-by-step in [`PHOTOS.md`](PHOTOS.md), architecture and landmines in [`specs/photos.md`](specs/photos.md).
+Originals live outside `public/` and are gitignored; `npm run photos` encodes the AVIF variants and regenerates the manifests. Never edit a `*.generated.ts`.
+
+- Gallery: `photos/<trip-slug>/` → `public/images/gallery/` + `data/trips.generated.ts`
+- Projects: `project-images/<project-slug>/` → `public/images/project/` + `data/projects.generated.ts` (`cover.*` is the cover, everything else a shot)
+
+Step-by-step in [`PHOTOS.md`](PHOTOS.md), architecture and landmines in [`specs/photos.md`](specs/photos.md).
 
 ## Deploy (Cloudflare Pages)
 
@@ -27,5 +32,5 @@ Originals go in `photos/<trip-slug>/` (gitignored); `npm run photos` encodes the
 - `src/styles/` — tokens (`_tokens.scss`), theming (`_themes.scss`), font (`_fonts.scss`), reset.
 - `src/app/pages/` — Analog file-based routes (`/`, `/work`, `/work/:slug`, `/about`, `/gallery`).
 - `specs/` — build checklist + one spec per view/component with ⚠ LANDMINE callouts.
-- `photos/` — gallery originals, gitignored staging only. Not a backup: keep masters elsewhere.
-- `scripts/photos.mjs` — the photo pipeline behind `npm run photos`.
+- `photos/`, `project-images/` — image originals, gitignored staging only. Not a backup: keep masters elsewhere.
+- `scripts/photos.mjs` — the image pipeline behind `npm run photos`.

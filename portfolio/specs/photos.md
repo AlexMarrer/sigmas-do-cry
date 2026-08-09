@@ -1,6 +1,15 @@
-# Shared · Photo pipeline — `scripts/photos.mjs` → `data/trips.generated.ts`
+# Shared · Image pipeline — `scripts/photos.mjs`
 
-**Purpose.** Turn hand-picked travel originals into the AVIF variants the gallery ships, and into a manifest nobody maintains by hand. One command: `npm run photos`. Feeds [06-gallery.md](06-gallery.md) and [lightbox.md](lightbox.md).
+**Purpose.** Turn originals into the AVIF variants the site ships, and into manifests nobody maintains by hand. One command, `npm run photos`, two passes over one encoder. Feeds [06-gallery.md](06-gallery.md), [lightbox.md](lightbox.md), [cursor-preview.md](cursor-preview.md) and [04-project-detail.md](04-project-detail.md).
+
+| | source | output | manifest | widths | quality |
+|---|---|---|---|---|---|
+| Gallery | `photos/<trip>/` | `public/images/gallery/<trip>/` | `trips.generated.ts` | 400 / 900 / 1800 | 55 |
+| Projects | `project-images/<slug>/` | `public/images/project/<slug>/` | `projects.generated.ts` | 700 / 1400 | 78 |
+
+The passes share everything mechanical — no upscaling, incremental encode, orphan reporting, ⚠ F4 — and differ only where the content does. Photographs get a `tone` and an EXIF capture date and are sorted by it; project images get neither and stay in filename order, because a screenshot sequence is curated rather than chronological. Quality 78 vs 55 is the same reasoning: small UI text smears where a photograph would not.
+
+The project pass reserves exactly one filename: `cover.*` becomes `ProjectImages.cover`, everything else is a shot. `Project` carries **no image field at all** — the folder name is the only link, so a hand-written path cannot drift from a folder (it already had: `the-rising-sigmas/` against slug `rising-sigmas`). A project with no folder or no cover falls back to its `hue` gradient, which is a supported state.
 
 ## Storage decision — the repo, not object storage
 
@@ -15,12 +24,20 @@ The one way this breaks is committing originals: 600 × ~6 MB = 3.6 GB, and git 
 ## Layout
 
 ```
-photos/<trip-slug>/<anything>.jpg          gitignored, staging only, NOT a backup
-public/images/gallery/<trip-slug>/<id>-<width>.avif   committed, shipped
+photos/gallery/<trip-slug>/<anything>.jpg   gitignored, staging only, NOT a backup
+photos/work/<project-slug>/cover.png        same
+photos/work/<project-slug>/01-<name>.png
+
+public/images/gallery/<trip-slug>/<id>-<width>.avif    committed, shipped
+public/images/project/<project-slug>/<id>-<width>.avif committed, shipped
+
 src/app/data/trips.generated.ts            committed, generated, never hand-edited
+src/app/data/shots.generated.ts            same
 ```
 
-`<trip-slug>` is the folder name and is load-bearing three times over: manifest key, image path segment, and the future `/gallery/<slug>` route. The script refuses folders that aren't already slugs rather than silently normalising them.
+`<trip-slug>` is the folder name and is load-bearing three times over: manifest key, image path segment, and the future `/gallery/<slug>` route. The script refuses folders that aren't already slugs rather than silently normalising them. `<project-slug>` carries the same weight against `projects.ts`.
+
+The `gallery/` and `work/` level exists because **every directory under `photos/` used to be a trip**. Dropping `photos/roamnote/` in beside `photos/korea-2025/` would have made it a trip, encoded it into `public/images/gallery/roamnote/`, and left the cross-check complaining about a missing `trips.ts` entry. Moving the existing trips one level down changes no output path and no id, so it orphans nothing — `photos/` is gitignored, it is a local `mv`.
 
 ## `npm run photos`
 
@@ -52,7 +69,9 @@ Captions double as `alt` (already true in [06-gallery.md](06-gallery.md)), which
 
 `TripShot` is gone. Its `aspect`/`ratio` are derived from `width`/`height`, and the old hand-written `Trip.meta` (`'Switzerland · 2025 · 6 photos'`) is now computed — both were second sources of truth that went stale the first time a photo was added.
 
-`npm run photos` cross-checks the two halves and reports a trip that has photos but no `trips.ts` entry, or an entry whose folder is missing. These print as notes and deliberately do **not** set a failing exit code: encoding first and writing the entry second is the normal order of work.
+`npm run photos` cross-checks both halves and reports a group that has images but no data entry, or an entry whose folder is missing. These print as notes and deliberately do **not** set a failing exit code: encoding first and writing the entry second is the normal order of work.
+
+The check **scrapes the slugs out of the source text** rather than importing the module. Importing worked while the data files had only `import type` (Node strips those), but `projects.ts` now imports its own generated manifest, and Node cannot resolve the extensionless specifier the rest of the codebase uses — the check silently stopped running the moment that import was added. A regex over a flat literal array cannot break that way.
 
 ## Frontend consumption
 
@@ -74,11 +93,31 @@ Filter state is page-local signals — `place`, `order`, and a `visible` compute
 
 **The single gallery page does not scale to the full trip count.** At 20 trips it carries 400+ tiles; lazy loading keeps the initial hit small but a full scroll pulls ~28 MB, and the chip row passes readable width somewhere around 8 countries. It stays comfortable to roughly **6–8 trips / ~120 photos**. Past that, split it the way `/work` already splits: `/gallery` becomes one cover card per trip (that's what `Trip.cover` is for) plus the filter, and `/gallery/[slug]` renders one trip's photos — enumerated for prerender from the trip data exactly like the project slugs (⚠ C1). Keying the photo data by trip slug from day one is what keeps that split a layout change instead of a data migration.
 
+## Second collection — project images
+
+One script, one `npm run photos`, two collections. The alternative — a `shots.mjs` beside `photos.mjs` — duplicates the freshness check, the concurrency pool, the orphan logic and the EXIF handling, and the copy rots the first time only one of them gets a fix.
+
+`SRC` / `OUT` / `WIDTHS` / `QUALITY` stop being module constants and become fields on a collection record: `{ name, src, out, widths, quality, manifest, sort, type }`. `main()` loops over the list; `collectTrip()` becomes `collectFolder(collection, folder)`. `pool`, `slugify`, `isFresh`, the encode core, the tone sample and the prune reporting are reused verbatim.
+
+**Widths: `[700, 1400, 2100]`.** Read off the design, not guessed. Content width is `$max-width: 87.5rem` = 1400px. The cover (`aspect-ratio: 16 / 8.5`) and the first shot (`16 / 9`, `grid-column: 1 / -1`) fill it; every further shot is `4 / 3` inside `repeat(auto-fit, minmax(min(360px, 100%), 1fr))`, which is ~450px at three columns and ~680px when the grid collapses to one. 2100 covers the full-width pair at 1.5×; 2800 would be the honest 2× but doubles the two heaviest files for a difference that flat UI screenshots barely show. Revisit only if the cover looks soft.
+
+**Ordering is the filename, not the capture date.** Screenshots carry no EXIF, so `captureDate()` falls through to `mtime` and the order becomes "whenever I last touched the file". `usable.sort()` already gives filename order; this collection just skips the `takenAt` re-sort. Prefix with `01-`, `02-` — the prefix stays in the id, which is fine because these ids are not deeplink targets the way gallery ids are.
+
+**`cover` is a reserved basename.** `photos/work/<slug>/cover.png` produces id `cover`; everything else is a shot in filename order. That keeps `Project.cover` out of `projects.ts` entirely — a path in the hand-written half is a second source of truth, exactly what `Trip.cover` avoids by holding a photo id instead. `coverBackground()` prefers the generated cover and falls back to the hue gradient, unchanged at the call sites.
+
+**Data contract:** `ProjectShot` in `types.ts` — `{ id, width, height, widths[], tone }`. `GalleryPhoto` minus `takenAt`, which is meaningless here and would be a field nobody can trust. `shots.generated.ts` is keyed by project slug, and `render()` takes the type name and field list as parameters instead of hard-coding `GalleryPhoto`. The cross-check runs against `projects.ts` the same way it runs against `trips.ts`, and stays advisory.
+
+The five committed `public/images/project/<slug>/cover.png` files become dead weight the moment the pipeline produces AVIFs for the same slots. Prune only ever deletes inside its own collection's `out` and only what the manifest didn't claim — these are hand-placed, so they need a hand-written `git rm`.
+
 ## ⚠ LANDMINES
 
+- **A cover is a `background`, so it cannot carry a srcset.** `coverBackground(project, width)` picks the file itself — 700 for the cursor-preview card (330 CSS px, covered even at 2×), 1400 for the detail cover. Passing a width the source was too small for falls back to the largest that exists, which is why `widths[]` is in the manifest here too.
+- **A broken cover is invisible.** The hue gradient is the bottom of the three layers, so a missing or misnamed image degrades into exactly the design's own fallback — you cannot tell it apart from a project that never had a screenshot. The script's cross-check is the only thing that surfaces it.
 - **F3 — originals never live under `public/`.** Vite copies that folder verbatim into the build output, so originals placed there ship publicly *and* blow the 25 MiB per-file limit; `.gitignore` is a different layer and does not stop it. They belong in `photos/`, outside `public/`, ignored. And `photos/` is a staging area, not a backup — it does not survive a fresh clone, so the masters have to live somewhere else that does.
 - **F4 — `.rotate()` before resize, `.keepIccProfile()`, never `.withMetadata()`.** sharp drops all metadata on re-encode, and that one default causes three separate things. (a) The EXIF orientation tag goes with it, so without a no-arg `.rotate()` first every portrait phone shot lands sideways — and the *displayed* dimensions are the transpose of the stored ones for orientations 5–8, which sharp 0.33 won't derive for you (no `autoOrient`). (b) The ICC colour profile goes too, while the pixel values stay put: untagged output is read as sRGB by every browser, so a Display P3 iPhone shot or an AdobeRGB export renders with a visible shift. `.keepIccProfile()` keeps the profile and nothing else — ~500 bytes a file, under 1 MB across the whole library. (c) EXIF stripping is the part that *is* wanted: GPS coordinates and camera serials stay out of the build, which is why `.withMetadata()` (which would keep all of it) must never appear here.
 - **F5 — the loader is global, and `ngSrcset` fails quietly without it.** Two halves. (a) An `IMAGE_LOADER` provider replaces the loader for *every* `NgOptimizedImage` in the app, and `getRewrittenSrc()` routes the plain `ngSrc` through it as well, not just the srcset entries — so a gallery-shaped loader rewrites `/images/hero-cutout.png` too unless it passes through anything that isn't a gallery src. (b) With the default noop loader, `ngSrcset` does not error: Angular logs NG02963 as a `console.warn` in dev builds only, and emits *the same URL for every width descriptor*. The srcset looks correct in the DOM while serving one size at all of them. (Automatic srcset generation is skipped entirely under the noop loader, and `placeholder="true"` is the one case that actually throws.) Verified against @angular/common 22.0.5.
+- **F6 — the prune guard is per collection, not global.** Today's hard-guard refuses any path outside the single `OUT`. With two collections the naive refactors both break: leave it pointed at `public/images/gallery/` and project orphans can never be deleted; widen it to `public/images/` and one bad prune reaches `hero-cutout.png` and the footer portrait, which are hand-placed and unrecoverable from the pipeline. The guard has to be evaluated against the *current* collection's `out`, and every collection's `out` has to be a real subfolder of `public/images/` — never `public/images/` itself.
+- **F7 — quality 55 is a photograph setting.** Tuned on `korea-2025`, where it holds up. Screenshots are the opposite input: hard edges, flat fills, small text, and AVIF at 55 puts visible ringing along UI borders and mush into 12px labels. Project images want 65–75. This is why `quality` moves onto the collection record rather than staying a module constant — and why re-encoding after the change needs `--force`, since the freshness check compares timestamps and knows nothing about settings.
 - **A partial run must not write a partial manifest.** Skipping one trip and writing anyway replaces `galleryPhotos` with `{}` and takes every *other* trip's photos down with it — this bit during testing. The script now leaves the manifest untouched whenever a trip was skipped and says which one to fix.
 - **Id collisions overwrite photos silently.** `DSC_4821.jpg` and `dsc 4821.jpg` both slugify to `dsc-4821`. Checked before any encoding, because the second file would otherwise just win.
 - **`track shot.id`, never `$index`** (⚠ B5). Filtering makes Angular reuse tile DOM nodes; index tracking swaps image sources inside nodes whose lazy load is still in flight, so wrong photos flash into place.

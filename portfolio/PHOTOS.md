@@ -1,12 +1,21 @@
-# Maintaining the gallery photos
+# Maintaining the images
 
-How to get photos from a trip onto the site. The *why* — storage decision, data contract, landmines — is in [`specs/photos.md`](specs/photos.md); this is the runbook.
+How to get images onto the site — gallery photos and project screenshots. The *why* — storage decision, data contract, landmines — is in [`specs/photos.md`](specs/photos.md); this is the runbook.
 
 ```bash
 npm run photos
 ```
 
-That one command reads `photos/`, writes the AVIF variants and the manifest. Everything below is detail around it.
+One command, two passes over the same encoder:
+
+| | source (gitignored) | output | data file |
+|---|---|---|---|
+| Gallery | `photos/<trip-slug>/` | `public/images/gallery/<trip>/` | `trips.generated.ts` |
+| Projects | `project-images/<project-slug>/` | `public/images/project/<slug>/` | `projects.generated.ts` |
+
+Gallery photos get 400/900/1800 at quality 55; project images get 700/1400 at quality 78, because screenshots carry small UI text that smears at photo quality. Everything else — no upscaling, incremental re-encode, orphan reporting, EXIF stripped, colour profile kept — works the same in both.
+
+Project images are covered in [their own section](#project-images) further down. Everything until then is the gallery.
 
 ## Adding a new trip
 
@@ -101,6 +110,26 @@ The script exits with code 1 if anything was skipped or reported, so nothing fai
 | `orphan  public\images\gallery\…` | A derivative whose original is gone. Re-run with `-- --prune` to delete, or restore the original. |
 | `trips.generated.ts NOT written — fix the N skipped trip(s)` | Something above was skipped. The manifest is deliberately left alone so a single bad filename can't wipe every other trip's data. Fix and re-run. |
 
+## Project images
+
+One folder per project, named exactly like the project's `slug` in `projects.ts`:
+
+```
+project-images/portfolio/cover.png      ← the cover, reserved filename
+project-images/portfolio/01-home.png    ← shots, in filename order
+project-images/portfolio/02-detail.png
+```
+
+**`cover.*` is the only reserved name.** It becomes the image behind the project title — on the hover card on `/work`, and on the cover of the project's detail page. Everything else in the folder is a shot and renders at the end of that detail page, in filename order. Prefix them `01-`, `02-` when the order matters; unlike travel photos there is no capture date to sort by.
+
+A project with no folder, or a folder with no `cover.*`, falls back to its `hue` gradient. That is a supported state, not a broken one — five of the nine projects are there right now, and `npm run photos` lists them so you know which.
+
+There is **no path to type anywhere.** The folder name is the link, which is why it has to match the slug; the script tells you when it doesn't. `projects.ts` never mentions images at all.
+
+Sizes: 700px covers the hover card even on a retina display (the card is at most 330 CSS px wide); 1400 is for the detail page's full-width cover and its first shot. A source narrower than 1400 simply doesn't get that variant.
+
+> **A missing cover looks exactly like a project that never had one.** The hue gradient sits underneath the screenshot as the bottom layer, so a failed image degrades silently into the intended fallback. If a cover you added isn't showing, check the run output — the script reports folders it doesn't recognise.
+
 ## What happens to the metadata
 
 The published AVIFs carry **no EXIF**: no GPS coordinates, no camera model or serial, no exposure data, no timestamps. That's deliberate — travel photos are geotagged, and the gallery is public.
@@ -114,9 +143,9 @@ Your originals in `photos/` are never modified, only read. Everything is still i
 
 ## Two things that are easy to get wrong
 
-**Don't put originals in `public/`.** Anything in that folder is copied verbatim into the build and shipped — originals would end up publicly downloadable and break Cloudflare's 25 MiB per-file limit. `.gitignore` doesn't stop that; it's a different mechanism. Originals go in `photos/`, which is outside `public/` for exactly this reason.
+**Don't put originals in `public/`.** Anything in that folder is copied verbatim into the build and shipped — originals would end up publicly downloadable and break Cloudflare's 25 MiB per-file limit. `.gitignore` doesn't stop that; it's a different mechanism. Originals go in `photos/` and `project-images/`, both outside `public/` for exactly this reason.
 
-**Don't hand-edit `trips.generated.ts`.** Every run overwrites it. Captions, names, and anything else you decide belong in `trips.ts`.
+**Don't hand-edit the `*.generated.ts` files.** Every run overwrites them. Captions, names, and anything else you decide belong in `trips.ts` / `projects.ts`.
 
 ## Roughly how much space this takes
 

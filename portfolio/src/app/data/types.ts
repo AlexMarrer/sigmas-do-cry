@@ -14,14 +14,9 @@ export interface Project {
   description: string;
   /** OKLCH hue driving cover gradient + screenshot tints (see gradient helpers). */
   hue: number;
-  /**
-   * Optional cover image under public/, e.g. '/images/work/roamnote.jpg'. When
-   * set it replaces the hue gradient on the cursor-preview card and the detail
-   * cover; without it the gradient stays the fallback — which is why `hue` is
-   * required and this is not. Always read it through `coverBackground()`, never
-   * branch on it at the call site.
-   */
-  cover?: string;
+  // No `cover` path here on purpose: images are discovered by slug from
+  // project-images/<slug>/ into ProjectImages, so a path can't drift from a
+  // folder name. Read them through `coverBackground()` / `projectShots()`.
   /** Present only if the project has a live site / public repo. */
   liveUrl?: string;
   gitUrl?: string;
@@ -73,6 +68,28 @@ export interface Trip {
   /** Photo id → caption. Sparse on purpose: caption the few that earn one, the
    *  rest fall back to name + country via `captionFor()`. */
   captions?: Record<string, string>;
+}
+
+/**
+ * One project image. GENERATED into `projects.generated.ts` by `npm run photos`
+ * from `project-images/<slug>/`. URL: `/images/project/{slug}/{id}-{width}.avif`.
+ */
+export interface ProjectImage {
+  /** Slugified source filename. `cover` is reserved and becomes the cover. */
+  id: string;
+  /** Intrinsic size of the LARGEST generated variant. */
+  width: number;
+  height: number;
+  /** Which variants exist, ascending. Small sources get fewer than [700, 1400]. */
+  widths: number[];
+}
+
+/** Every image belonging to one project. Generated — see `projects.generated.ts`. */
+export interface ProjectImages {
+  /** From `cover.*`. Absent → `coverBackground()` stays on the hue gradient. */
+  cover?: ProjectImage;
+  /** Everything else, in filename order — the shots at the end of the detail page. */
+  shots: ProjectImage[];
 }
 
 /** A Trip with its generated photos joined in. Built by `gallery.ts`, never written by hand. */

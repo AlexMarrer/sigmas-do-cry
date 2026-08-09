@@ -6,6 +6,18 @@ import type { GalleryPhoto } from './types';
 
 /** Keyed by trip slug = the folder name under photos/. Each list sorted by capture date. */
 export const galleryPhotos: Record<string, GalleryPhoto[]> = {
+  'amsterdam-2026': [
+    { id: '20260530-200759', width: 1800, height: 1130, widths: [400, 900, 1800], tone: '#141732', takenAt: '2026-05-30T20:07:59.000Z' },
+    { id: '20260530-204839', width: 1800, height: 2400, widths: [400, 900, 1800], tone: '#241217', takenAt: '2026-05-30T20:48:39.000Z' },
+    { id: '20260530-221421', width: 1800, height: 1013, widths: [400, 900, 1800], tone: '#090d1b', takenAt: '2026-05-30T22:14:21.000Z' },
+    { id: 'dsc03676', width: 1800, height: 2700, widths: [400, 900, 1800], tone: '#533f2e', takenAt: '2026-05-31T11:21:23.000Z' },
+    { id: 'dsc03746', width: 1800, height: 2539, widths: [400, 900, 1800], tone: '#554b3f', takenAt: '2026-05-31T14:48:47.000Z' },
+    { id: 'dsc03748', width: 1800, height: 2700, widths: [400, 900, 1800], tone: '#2f2721', takenAt: '2026-05-31T15:03:53.000Z' },
+    { id: 'dsc03757', width: 1800, height: 2700, widths: [400, 900, 1800], tone: '#616058', takenAt: '2026-05-31T15:07:16.000Z' },
+    { id: 'dsc03761', width: 1800, height: 2700, widths: [400, 900, 1800], tone: '#504137', takenAt: '2026-05-31T15:08:28.000Z' },
+    { id: 'dsc03763', width: 1800, height: 2700, widths: [400, 900, 1800], tone: '#55493d', takenAt: '2026-05-31T15:13:26.000Z' },
+    { id: 'dsc03727', width: 900, height: 1347, widths: [400, 900], tone: '#433d33', takenAt: '2026-05-31T15:21:28.000Z' },
+  ],
   'korea-2025': [
     { id: 'alu00463', width: 1800, height: 1200, widths: [400, 900, 1800], tone: '#3d4b4c', takenAt: '2025-04-11T08:23:57.000Z' },
     { id: 'alu00470', width: 1800, height: 1138, widths: [400, 900, 1800], tone: '#3d4443', takenAt: '2025-04-11T08:44:55.000Z' },
@@ -53,5 +65,24 @@ export const galleryPhotos: Record<string, GalleryPhoto[]> = {
     { id: 'alu03103-enhanced-nr', width: 900, height: 1350, widths: [400, 900], tone: '#14100e', takenAt: '2025-04-18T12:59:15.000Z' },
     { id: 'alu03250', width: 1800, height: 2700, widths: [400, 900, 1800], tone: '#3a3229', takenAt: '2025-04-22T16:44:36.000Z' },
     { id: 'alu03304', width: 1800, height: 2700, widths: [400, 900, 1800], tone: '#32231e', takenAt: '2025-04-24T17:55:30.000Z' },
+  ],
+  'london-2026': [
+    { id: '20260322-205441', width: 1800, height: 1350, widths: [400, 900, 1800], tone: '#24212d', takenAt: '2026-03-22T20:54:41.000Z' },
+    { id: '20260326-124904', width: 1800, height: 1350, widths: [400, 900, 1800], tone: '#696564', takenAt: '2026-03-26T12:49:05.000Z' },
+    { id: '20260326-205119', width: 1800, height: 2400, widths: [400, 900, 1800], tone: '#484b73', takenAt: '2026-03-26T20:51:19.000Z' },
+    { id: '20260326-210806', width: 1800, height: 1350, widths: [400, 900, 1800], tone: '#373434', takenAt: '2026-03-26T21:08:06.000Z' },
+    { id: '20260327-193457', width: 1800, height: 1350, widths: [400, 900, 1800], tone: '#191919', takenAt: '2026-03-27T19:34:57.000Z' },
+    { id: '20260327-193805', width: 1800, height: 2400, widths: [400, 900, 1800], tone: '#1f0f0d', takenAt: '2026-03-27T19:38:05.000Z' },
+    { id: '20260327-193815', width: 1800, height: 2400, widths: [400, 900, 1800], tone: '#181613', takenAt: '2026-03-27T19:38:15.000Z' },
+    { id: '20260328-142956', width: 1800, height: 1350, widths: [400, 900, 1800], tone: '#372e2d', takenAt: '2026-03-28T14:29:56.000Z' },
+    { id: '20260725-192006', width: 1800, height: 2400, widths: [400, 900, 1800], tone: '#436064', takenAt: '2026-07-25T19:20:06.000Z' },
+    { id: '20260725-192332', width: 1800, height: 2513, widths: [400, 900, 1800], tone: '#29231d', takenAt: '2026-07-25T19:23:32.000Z' },
+    { id: '20260726-205143', width: 1800, height: 2400, widths: [400, 900, 1800], tone: '#656b68', takenAt: '2026-07-26T20:51:43.000Z' },
+    { id: '20260727-125220', width: 1800, height: 2400, widths: [400, 900, 1800], tone: '#7d4743', takenAt: '2026-07-27T12:52:20.000Z' },
+    { id: '20260727-175748', width: 1800, height: 2400, widths: [400, 900, 1800], tone: '#373b3b', takenAt: '2026-07-27T17:57:48.000Z' },
+    { id: '20260727-181657', width: 1800, height: 2445, widths: [400, 900, 1800], tone: '#4a3d38', takenAt: '2026-07-27T18:16:58.000Z' },
+    { id: '20260727-191302', width: 1800, height: 1350, widths: [400, 900, 1800], tone: '#30251c', takenAt: '2026-07-27T19:13:02.000Z' },
+    { id: '20260728-202523', width: 1800, height: 2400, widths: [400, 900, 1800], tone: '#201516', takenAt: '2026-07-28T20:25:23.000Z' },
+    { id: '20260728-202945', width: 1800, height: 2400, widths: [400, 900, 1800], tone: '#422a22', takenAt: '2026-07-28T20:29:45.000Z' },
   ],
 };

@@ -3,7 +3,8 @@
 // only you can fill (outcomes, results, screen names, wording).
 // FRAMEWORK-FREE: imported by vite.config.ts for the prerender route list.
 
-import type { Project } from "./types";
+import { projectImages } from "./projects.generated";
+import type { Project, ProjectImage } from "./types";
 
 /** Per-project cover gradient — README: Design Tokens · Colors. */
 export function coverGradient(hue: number): string {
@@ -21,19 +22,33 @@ const COVER_SCRIM = "linear-gradient(rgb(0 0 0 / 55%), rgb(0 0 0 / 55%))";
 
 /**
  * The `background` shorthand for anything that shows a project visually — the
- * cursor-preview card and the detail cover. Image if the project has one, hue
- * gradient if it does not, so both call sites stay branch-free and a project
- * can gain a screenshot later without touching a component.
+ * cursor-preview card (700) and the detail cover (1400). Cover image if
+ * `project-images/<slug>/cover.*` exists, hue gradient if it does not, so both
+ * call sites stay branch-free and a project can gain a screenshot without
+ * touching a component.
  *
  * With an image it is three layers, topmost first: scrim, screenshot, then the
  * hue gradient as the base — the card sets this background at hover time, so
- * the gradient is what paints while the screenshot is still in flight (and if
- * the path is ever wrong). Same role `tone` plays for gallery photos.
+ * the gradient is what paints while the screenshot is still in flight. Same role
+ * `tone` plays for gallery photos.
+ *
+ * A `background` cannot carry a srcset, so the surface picks its own width here.
  */
-export function coverBackground(project: Project): string {
-  return project.cover
-    ? `${COVER_SCRIM}, url("${project.cover}") center / cover no-repeat, ${coverGradient(project.hue)}`
-    : coverGradient(project.hue);
+export function coverBackground(project: Project, width: 700 | 1400 = 700): string {
+  const cover = projectImages[project.slug]?.cover;
+  if (!cover) return coverGradient(project.hue);
+  const w = cover.widths.includes(width) ? width : cover.widths[cover.widths.length - 1];
+  const url = `/images/project/${project.slug}/${cover.id}-${w}.avif`;
+  return `${COVER_SCRIM}, url("${url}") center / cover no-repeat, ${coverGradient(project.hue)}`;
+}
+
+/**
+ * The extra images for a project, filename order — they render at the end of the
+ * detail page. Empty when the project has no source folder yet, so the shot
+ * placeholders in `Project.shots` stay the fallback until real images land.
+ */
+export function projectShots(project: Project): ProjectImage[] {
+  return projectImages[project.slug]?.shots ?? [];
 }
 
 /** Screenshot-placeholder tints — README: View 4 (Project detail). */
@@ -59,7 +74,6 @@ export const projects: Project[] = [
     stack: ["Angular", "Analog", "SCSS"],
     description: "This site — a statically generated portfolio built from a design prototype.",
     hue: 25,
-    cover: "/images/project/portfolio/cover.png",
     gitUrl: "https://github.com/AlexMarrer/sigmas-do-cry",
     featured: false,
     body: [
@@ -96,7 +110,6 @@ export const projects: Project[] = [
     stack: ["Java", "Spring Boot", "PostgreSQL", "Keycloak"],
     description: "A digital recipe collection with role-based access — recipes, ingredients, ratings.",
     hue: 95,
-    cover: "/images/project/recipevault/cover.png",
     gitUrl: "https://github.com/AlexMarrer/RecipeVault",
     featured: true,
     body: [
@@ -187,7 +200,6 @@ export const projects: Project[] = [
     stack: [".NET 8", "Angular", "Ionic", "MSSQL"],
     description: "Training plans without a spreadsheet — sessions, load, and weekly progression.",
     hue: 235,
-    cover: "/images/project/the-rising-sigmas/cover.png",
     gitUrl: "https://github.com/AlexMarrer/the-rising-sigmas",
     featured: true,
     body: [
@@ -206,7 +218,6 @@ export const projects: Project[] = [
     stack: ["Electron", "JavaScript", "Spotify API"],
     description: "A first web app: search artists and tracks through the Spotify API and play them.",
     hue: 160,
-    cover: "/images/project/k-ranking-list/cover.png",
     gitUrl: "https://github.com/AlexMarrer/k-ranking-list",
     featured: false,
     body: [
