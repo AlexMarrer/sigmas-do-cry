@@ -25,6 +25,7 @@ Timing/trigger = directive inputs → written as `--reveal-delay`/`--reveal-dura
 | `revealDelay` | `0` | ms before the transition starts — stagger via `[revealDelay]="i * 80"` |
 | `revealDuration` | `800` | ms transition duration |
 | `revealOffset` | `'0px'` | IO `rootMargin` bottom; `'-120px'` = trigger 120px later |
+| `revealAlways` | `false` | skip rule 1 below — animate even when the element is already in view |
 
 ```html
 <div class="intro__grid reveal--fade-in-up" appScrollReveal></div>
@@ -33,14 +34,14 @@ Timing/trigger = directive inputs → written as `--reveal-delay`/`--reveal-dura
 
 ## Behavior
 
-1. In the **browser only** (`afterNextRender`): if the element's top is already above ~86% of the viewport height, do nothing — it's visible content, leave it alone.
+1. In the **browser only** (`afterNextRender`): if the element's top is already above ~86% of the viewport height, do nothing — it's visible content, leave it alone. `revealAlways` opts out (added 2026-08-09 for the gallery's "Show all": tiles created by a click were never on screen, so landing in view is not a reason to skip their entrance).
 2. Otherwise write the custom props, add `.reveal--waiting` (hidden state) and `observe()`.
 3. On intersection (threshold .12): swap `--waiting` for `--in` (carries the transition), disconnect — reveals run once, no re-hiding on scroll-up.
 4. `MotionService.reducedMotion` ⇒ skip entirely (content just is visible).
 
 ## ⚠ LANDMINES
 
-- **A3 — the hidden state must never match prerendered HTML.** It lives on `.reveal--waiting`, which only the directive adds, client-side, after hydration. Never write `reveal--waiting`/`reveal--in` in a template, and never attach hidden styles to `[appScrollReveal]` itself.
+- **A3 — the hidden state must never match prerendered HTML.** It lives on `.reveal--waiting`, which only the directive adds, client-side, after hydration. Never write `reveal--waiting`/`reveal--in` in a template, and never attach hidden styles to `[appScrollReveal]` itself. Same rule bounds `revealAlways`: it is for elements that cannot be in the prerendered HTML (created on an interaction). On anything above the fold at load it makes content the user is already reading blink out and fade back in.
 - **A5** — not in `ngOnInit` (mutates DOM Angular is still hydrating) — `afterNextRender` is the only correct hook.
 - **A1** — `IntersectionObserver` referenced at module/constructor level crashes the prerender build. Inside `afterNextRender` you're safe.
 - **B3** — `DestroyRef.onDestroy(() => io.disconnect())` — directives die on every route change; a leaked IO holds detached DOM.

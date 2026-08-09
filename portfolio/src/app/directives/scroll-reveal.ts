@@ -3,6 +3,7 @@ import {
   Directive,
   ElementRef,
   afterNextRender,
+  booleanAttribute,
   inject,
   input,
   numberAttribute,
@@ -18,6 +19,9 @@ export class ScrollReveal {
   readonly revealDelay = input(0, { transform: numberAttribute }); // ms
   readonly revealDuration = input(800, { transform: numberAttribute }); // ms
   readonly revealOffset = input('0px'); // rootMargin bottom, e.g. '-120px'
+  // ⚠ A3: only for elements that were NEVER in the prerendered HTML — content
+  // the user is already looking at must not blink out and fade back in.
+  readonly revealAlways = input(false, { transform: booleanAttribute });
 
   constructor() {
     const el = inject(ElementRef).nativeElement as HTMLElement;
@@ -27,8 +31,11 @@ export class ScrollReveal {
     // ⚠ A1/A5: browser-only, after hydration.
     afterNextRender(() => {
       if (motion.reducedMotion()) return; // ⚠ E3
-      // Visible on load (top above ~86% of the viewport) → leave it alone (⚠ A3).
-      if (el.getBoundingClientRect().top < window.innerHeight * 0.86) return;
+      // Visible on load (top above ~86% of the viewport) → leave it alone (⚠ A3),
+      // unless the element only came into existence on an interaction.
+      if (!this.revealAlways() && el.getBoundingClientRect().top < window.innerHeight * 0.86) {
+        return;
+      }
 
       el.style.setProperty('--reveal-delay', `${this.revealDelay()}ms`);
       el.style.setProperty('--reveal-duration', `${this.revealDuration()}ms`);
